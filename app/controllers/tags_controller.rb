@@ -1,6 +1,13 @@
 class TagsController < ApplicationController
   # GET /tags
   # GET /tags.json
+# asdfa
+# fas
+# fa
+# sf
+# asd
+# fa
+# s
   def index
     @tags = Tag.all
 
