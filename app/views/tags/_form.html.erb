@@ -1,0 +1,33 @@
+<%= form_for(@tag) do |f| %>
+  <% if @tag.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@tag.errors.count, "error") %> prohibited this tag from being saved:</h2>
+
+      <ul>
+      <% @tag.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :tcode %><br />
+    <%= f.text_field :tcode %>
+  </div>
+  <div class="field">
+    <%= f.label :tvalue %><br />
+    <%= f.text_field :tvalue %>
+  </div>
+  <div class="field">
+    <%= f.label :tname %><br />
+    <%= f.text_field :tname %>
+  </div>
+  <div class="field">
+    <%= f.label :default %><br />
+    <%= f.number_field :default %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

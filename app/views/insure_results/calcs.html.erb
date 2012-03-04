@@ -1,0 +1,75 @@
+<div id="calcs-data"></div>	
+<%=company_for_checkbox%>
+<script type="text/javascript" charset="utf-8">
+	Ext.onReady(function(){
+		
+		var calcForm = [{
+			layout:'form',
+			items:[{
+				xtype:'textfield',fieldLabel:'计算年月', name:'calcs[yearmonth]'
+			}]
+		}] ;
+		
+		var buttonForm = [{
+			layout:'form',items:[{
+				xtype:'button' ,iconCls:'accept-icon', text:'执行计算', 
+				handler:function(){
+					if (!ftp.form.isValid()){
+						return ;
+					}
+					var chkValues = new Array();
+					var chkGroup = ftp.getForm().findField('companys').getValue();
+					for(var i= 0 ; i < chkGroup.length;i++){
+						chkValues[i] = chkGroup[i].inputValue;
+					}
+					var submitOptions = {
+						url : 'insure_results/calcs_create',
+						method : "POST",
+						params: { format: 'json','calcs[company]': chkValues.join(',')
+						<%= " , #{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>	
+						 },
+						waitMsg:'正在处理数据,请稍候...',
+						success:function(form,action){
+							Ext.MessageBox.alert("提示","成功排入任务");
+							form.reset();
+						},
+						failure:function(form,action){
+							var errorss = action.result.msg;
+							for(var e in errorss) {
+								Ext.MessageBox.alert(e + " -- > "+ errorss[e]);
+							}
+						}
+					}
+					ftp.form.submit(submitOptions);
+				}
+			}]
+		}]
+		
+		var checkGroup = {
+			xtype:'fieldset',title:'所有公司名称',
+			layout:'form',
+			collapsed:true ,
+			collapsible:true ,items:[{	
+				xtype:'checkboxgroup',
+				fieldLabel:"公司名称",name:'companys',
+				items:COM_CHECK
+			}]
+		}
+		
+		var ftp = new Ext.FormPanel({
+			title:"社保计算作业",
+			labelWidth:110,frame:true,
+			width:'100%', renderTo:"calcs-data",
+			height:'120',//Ext.getCmp('dsp-body').getActiveTab().getInnerHeight(),
+			bodyStyle:'padding:5px;',  
+			defaults: {
+		       anchor: '0'
+		    } ,
+			items:[{
+				layout:'column',border:false,
+				defaults:{ columnWidth:'.5',border:false},
+				items:[calcForm , buttonForm]
+			} , checkGroup]
+		});
+	});
+</script>

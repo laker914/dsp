@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Yearmonth:</b>
+  <%= @insure_result.yearmonth %>
+</p>
+
+<p>
+  <b>Emp:</b>
+  <%= @insure_result.emp_id %>
+</p>
+
+<p>
+  <b>Emp name:</b>
+  <%= @insure_result.emp_name %>
+</p>
+
+<p>
+  <b>Company:</b>
+  <%= @insure_result.company %>
+</p>
+
+<p>
+  <b>Hukou:</b>
+  <%= @insure_result.hukou %>
+</p>
+
+
+<%= link_to 'Edit', edit_insure_result_path(@insure_result) %> |
+<%= link_to 'Back', insure_results_path %>

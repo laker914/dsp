@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Pcode:</b>
+  <%= @province.pcode %>
+</p>
+
+<p>
+  <b>Pname:</b>
+  <%= @province.pname %>
+</p>
+
+<p>
+  <b>Py code:</b>
+  <%= @province.py_code %>
+</p>
+
+
+<%= link_to 'Edit', edit_province_path(@province) %> |
+<%= link_to 'Back', provinces_path %>

@@ -1,0 +1,432 @@
+ <div id="personal_accounts-data" style="border:0;"></div>
+<div id="personal_accounts-grid"></div>
+<input type="hidden" name="city_id" value="" id="city_id">
+<%=insure_item_for%>
+<script type="text/javascript" charset="utf-8">
+	Ext.onReady(function(){
+
+	var formHeight = 90;
+	var controller_name = "社保配置-个人";
+	var selectedRecordId = undefined;
+	var form = new Ext.FormPanel({
+		title:'查询',
+		width:'100%',
+		renderTo:'personal_accounts-data',
+		height:formHeight ,
+//		collapsible :true ,
+		labelWidth : 65,
+        labelAlign : "right",
+	 	bodyStyle: 'padding: 5px',//		bodyStyle:'padding:5px 5px 0',
+        defaults: {
+            anchor: '0'
+        } ,
+		keys : [{
+			 key: Ext.EventObject.ENTER,fn:search,scope:this
+		}] ,
+		items: [
+			{
+				layout:'column',
+				border:false,
+				items:[ 
+					{
+						layout:"form",border:false,
+						items : [
+						 	{	
+								xtype:'combotree',
+					            fieldLabel:'所属地区',
+					            name:'city_id',
+					            allowUnLeafClick:true,
+					            treeHeight:200,
+					            url:'/cities/cities_tree',
+					            onSelect:function(id ,text){
+									search();
+					            }
+							}
+								, 	
+								new Ext.form.ComboBox({
+											fieldLabel:'社保项目',hiddenName:'item_id' ,
+											typeAhead:true,triggerAction:'all',
+											lazyRender:true,mode:'local',selectOnFocus:true,
+											editable :false,emptyText:'请选择...',
+											listeners:{
+												select : function(combo ,record , index){
+													search();
+												}
+											},
+											store:new Ext.data.ArrayStore({
+												 fields:[
+												'item_id',
+												'item_id_name'
+												],
+												data:TAGS_ALL.concat(ITEM)
+											}),
+											valueField:'item_id', 
+											displayField:'item_id_name'
+							})
+						]
+					}
+				 ,{		layout:'form',border:false,
+						items:[
+							 	new Ext.form.ComboBox({
+										fieldLabel:'户口性质',hiddenName:'hukou' ,
+										typeAhead:true,triggerAction:'all',
+										lazyRender:true,mode:'local',selectOnFocus:true,
+										editable :false,emptyText:'请选择...',
+										listeners:{
+											select : function(combo ,record , index){
+												search();
+											}
+										},
+										store:new Ext.data.ArrayStore({
+											 fields:[
+											'hukou',
+											'hukou_name'
+											],
+											data:TAGS_ALL.concat(HUKOU)
+										}),
+										valueField:'hukou', 
+										displayField:'hukou_name'
+									}), 	new Ext.form.ComboBox({
+												fieldLabel:'扣款方式',hiddenName:'personal_type' ,
+												typeAhead:true,triggerAction:'all',
+												lazyRender:true,mode:'local',selectOnFocus:true,
+												editable :false,emptyText:'请选择...',
+												listeners:{
+													select : function(combo ,record , index){
+														search();
+													}
+												},
+												store:new Ext.data.ArrayStore({
+													 fields:[
+													'personal_type',
+													'personal_type_name'
+													],
+													data:TAGS_ALL.concat(RATE)
+												}),
+												valueField:'personal_type', 
+												displayField:'personal_type_name'
+								})
+						]
+				 }]
+			}]
+	});
+	var personal_citytree = new ComboBoxTree({
+        fieldLabel:'所属地区',
+		name:'personal_account[city_name]',
+        allowUnLeafClick:true,
+		allowBlank:false,
+        treeHeight:200,
+        url:'/cities/cities_tree',
+	    onSelect:function(id, text){
+			 document.getElementById('city_id').value = id;
+        }
+	});
+	var addFormPanel = new Ext.form.FormPanel({
+		bodyStyle:'padding:5px 5px 0',
+		defaultType:'textfield' , labelAlign:'right',lableWidth:70,frame:false,
+		baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+		items:[
+			personal_citytree
+		, new Ext.form.ComboBox({
+				hiddenName:'personal_account[hukou]',
+				fieldLabel:'户口性质',allowBlank:false,
+				typeAhead:true,triggerAction:'all',
+				lazyRender:true,mode:'local',selectOnFocus:true,
+				editable :false,
+				store:new Ext.data.ArrayStore({
+					 fields:[
+					'personal_account[hukou]',
+					'hukou_name'
+					],
+					data:HUKOU
+				}),
+				valueField:'personal_account[hukou]', 
+				displayField:'hukou_name'
+			}), 
+			new Ext.form.ComboBox({
+				 hiddenName:'personal_account[item_id]',allowBlank:false,fieldLabel:'保险项目',
+				typeAhead:true,triggerAction:'all',lazyRender:true,mode:'local',
+				selectOnFocus:true,editable:false,
+				store:new Ext.data.ArrayStore({
+					fields:[
+						'personal_account[item_id]','item_id_name'
+					] , data:ITEM
+				}),
+				valueField:'personal_account[item_id]',
+				displayField:'item_id_name'
+			})
+		,
+		new Ext.form.ComboBox({
+			hiddenName:'personal_account[personal_type]',allowBlank:false,fieldLabel:'扣款方式',
+			typeAhead:true,triggerAction:'all',lazyRender:true,mode:'local',
+			selectOnFocus:true,editable:false,
+			store:new Ext.data.ArrayStore({
+				fields:[
+					'personal_account[personal_type]','personal_type_name'
+				] , data:RATE
+			}),
+			valueField:'personal_account[personal_type]',
+			displayField:'personal_type_name'
+		})
+	 	,{
+			fieldLabel:'定额',name:'personal_account[fix_value]',allowBlank:false,anchor:'99%'
+		}	,{
+			fieldLabel:'定率',name:'personal_account[rate]',allowBlank:false,anchor:'99%'
+		}	,{
+			fieldLabel:'支付下限',name:'personal_account[personal_lower]',allowBlank:false,anchor:'99%'
+		}	,{
+			fieldLabel:'支付上限',name:'personal_account[personal_limit]',allowBlank:false,anchor:'99%'
+		},	 new Ext.form.ComboBox({
+					hiddenName:'personal_account[personal_round]',allowBlank:false,fieldLabel:'扣款方式',
+					typeAhead:true,triggerAction:'all',lazyRender:true,mode:'local',
+					selectOnFocus:true,editable:false,
+					store:new Ext.data.ArrayStore({
+						fields:[
+							'personal_account[personal_round]','personal_round_name'
+						] , data:ROUND
+					}),
+					valueField:'personal_account[personal_round]',
+					displayField:'personal_round_name'
+			})
+		,	{
+			name:'personal[id]' , id:"personal_id" , hidden :true   //主键值 隐藏 
+		}]
+	});
+	var sm = new Ext.grid.CheckboxSelectionModel();
+	var colModel = [
+		new Ext.grid.RowNumberer(),sm,
+		 {  dataIndex: 'id',hidden:true}
+		,{  dataIndex: "city_name",header:'所属地区',id:"city"		}
+		,{  dataIndex: "hukou", header:'户口性质',renderer:function(value){
+				for(var i in HUKOU){
+					status = HUKOU[i];
+					if(value == status[0]) return status[1];
+				}
+				return value;
+			}
+		}
+		,{	dataIndex: "item_id", header:'保险项目',renderer:function(value){
+				for (var i=0; i < ITEM.length; i++) {
+					if(ITEM[i][0] == value) return ITEM[i][1];
+				};
+			}
+		}
+		,{  dataIndex: 'personal_type',header: '扣款方式', width:50,renderer:function(value){
+				for (var i=0; i < RATE.length; i++) {
+					if(RATE[i][0] == value) return RATE[i][1];
+				};
+			} 
+		}
+		,{  dataIndex: 'fix_value',header:'定额'} 
+		,{  dataIndex: 'rate',header:'定率', width:50 }
+		,{  dataIndex: 'personal_lower',header:'支付下限', width:50 }
+		,{  dataIndex: 'personal_limit',header:'支付下限', width:50 }
+		,{  dataIndex: 'personal_round',header:'精确值', width:70 ,renderer:function(value){
+				for (var i=0; i < ROUND.length; i++) {
+					if(ROUND[i][0] == value) return ROUND[i][1];
+				};
+			}
+		}
+	];
+	 store = new Ext.data.JsonStore({
+	        // store configs
+	        autoDestroy: true,
+			baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+	        url: '/personal_accounts/grid.json',
+	        remoteSort: false,
+	        storeId: 'myStore',
+	        // reader configs
+	        idProperty: 'id',
+	        root: 'data',
+	        totalProperty: 'total',
+	        fields: [
+			{  name: 'id'}, {name:'city_name'},
+			{  name:'hukou'}, {name:'item_id'}, {name:'personal_type'}, 
+			{  name:'fix_value'},{ name:'rate'},
+			{  name:'personal_lower'}, { name:'personal_limit'},{name:'personal_round'}
+			]
+	    });
+
+		var grid = new Ext.grid.GridPanel({ //EditorGridPanel({
+	        store: store,
+			frame:true,
+			title:'个人资料',
+			renderTo: 'personal_accounts-grid',
+			width:'100%',
+			height:Ext.getCmp('dsp-body').getActiveTab().getInnerHeight()- formHeight,
+			monitorResize: true,
+			autoScroll:true,
+			//clicksToEdit:1 ,
+	        colModel: new Ext.grid.ColumnModel({
+	            columns: colModel ,
+	            defaults: {
+	                sortable: true
+	            }
+	        }),
+			sm : sm,
+	        loadMask: true,
+	        plugins: [ new Ext.ux.PanelResizer({
+		            minHeight: 100
+		        })],
+			stripeRows: true,
+	       // autoExpandColumn: 'personal',
+			listeners: {
+	            render: {
+	                fn: function(){
+	                   	loadData();
+	                }
+	            }
+	        },
+	        viewConfig: {  
+			                 forceFit: true,  
+			                 enableRowBody: true,  
+			                 showPreview: true 
+			} ,
+			bbar: new Ext.PagingToolbar({
+	            store: store,
+	            pageSize: 20,
+				displayInfo: true,
+				displayMsg: '显示第 {0} 条到 {1} 条记录，共 {2} 条' ,
+				plugins: [new Ext.ux.ProgressBarPager()]
+	        })	 ,
+				tbar:[
+					{ text: '新增' , iconCls:'add-icon'  , handler:function(){
+						create();
+					}
+					},'-',
+					{ text: '删除' , iconCls:'dele-icon' , handler:function(){
+						dele();
+					}
+					}
+				]  
+	    });
+	// edit row-data
+	grid.on('rowdblclick' , function(grid,rowIndex,event){
+		 edit();
+	});
+
+	var addCompanyWindow = new Ext.Window({
+		layout:'fit',width:400 , height: 310 ,resizable:false,draggable:true,
+		closable:true,modal:true, closeAction:'hide',
+		collapsible:true, maximizable:false, buttonAlign:'right',
+		border:false,animCollapse:true,
+		items:[addFormPanel],
+		buttons:[
+		{
+			text:'保存', iconCls:'save-icon', 
+			handler:function(){
+				save();
+			}
+		},{
+			text:'关闭',iconCls:'close-icon', 
+			handler:function(){
+				addCompanyWindow.hide();
+			}
+		}]
+	});
+
+	function create(){
+		selectedRecordId = undefined;
+		addFormPanel.form.reset();
+		addCompanyWindow.setTitle("新增"+controller_name);
+		addCompanyWindow.show();
+	}
+
+	function save(){
+		if (!addFormPanel.form.isValid()){
+			return ;
+		}
+		var url = 'personal_accounts'
+		var submitOptions = {
+			url : url,
+			method : "POST",
+			params: { format: 'json' 
+				,'personal_account[city_id]': document.getElementById("city_id").value
+			},
+			waitMsg:'正在处理数据,请稍候...',
+			success:function(form,action){
+				addCompanyWindow.hide();
+				store.reload();
+				form.reset();
+			},
+			failure:function(form,action){
+				var errorss = action.result.msg;
+				for(var e in errorss) {
+					alert(e + " -- > "+ errorss[e]);
+				}
+				//Ext.MessageBox.alert("提示",msg);
+			}
+		} ;
+		if (selectedRecordId) {
+			submitOptions.url  = 'personal_accounts/'+selectedRecordId;
+			submitOptions.params._method = 'PUT';
+		}
+		addFormPanel.form.submit(submitOptions);
+	}
+
+	function edit(){
+		var record = grid.getSelectionModel().getSelected();
+		if (Ext.isEmpty(record)){
+			Ext.MessageBox.alert("提示","请选择要修改的记录!");
+			return ;
+		}
+		//addFormPanel.getForm().loadRecord(record);
+		addFormPanel.getForm().load({
+			url:'/personal_accounts/'+record.get('id')+'/edit?format=json',
+			method:'GET',
+			success:function(form,action){
+				var a = action.result.data;
+				provinceCombo.setValue(a["personal[province]"]);
+				cityCombo.setValue(a["personal[city]"]);
+				areaCombo.setValue(a["personal[area]"]);
+			}
+		});
+		selectedRecordId = record.get('id');
+		addCompanyWindow.setTitle("修改"+controller_name);
+		addCompanyWindow.show();
+	}
+
+	function dele(){
+		var record = grid.getSelectionModel().getSelections();
+		if (Ext.isEmpty(record)) {
+			Ext.MessageBox.alert("提示","请选择要删除的记录");
+			return ;
+		}
+		var dlist = new Array();
+		for (var i = 0 ; i < record.length ; i++){
+			dlist.push(record[i].data.id);
+		}
+		Ext.Ajax.request({
+			url: 'personal_accounts/delete',
+			method:'POST',
+			params:{ 
+				format: 'json',
+				'dlist[]': dlist 
+				<%= " , #{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>	
+			 } ,
+			success:function(response, opts){
+				//alert(Ext.decode(response.responseText).msg);
+				loadData();
+			}, 
+			faild:function(response, opts){
+				alert(Ext.decode(response.responseText).msg);
+			}
+		});
+	}
+
+	function search(){
+		var formParams = form.getForm().getValues();
+		formParams = Ext.util.JSON.encode(formParams);
+		//alert(formParams);
+		loadData(formParams);
+	}
+
+	function loadData(formParams){
+		 store.load({
+			params: {
+				start:0 , limit:20, query:[formParams]
+			}
+		})
+	}
+});
+</script>

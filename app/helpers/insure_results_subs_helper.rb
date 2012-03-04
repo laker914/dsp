@@ -1,0 +1,2 @@
+module InsureResultsSubsHelper
+end

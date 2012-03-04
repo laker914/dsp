@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Main:</b>
+  <%= @insure_results_sub.main_id %>
+</p>
+
+<p>
+  <b>Insure type:</b>
+  <%= @insure_results_sub.insure_type %>
+</p>
+
+<p>
+  <b>Insure base:</b>
+  <%= @insure_results_sub.insure_base %>
+</p>
+
+<p>
+  <b>Insure money:</b>
+  <%= @insure_results_sub.insure_money %>
+</p>
+
+<p>
+  <b>Insure item:</b>
+  <%= @insure_results_sub.insure_item %>
+</p>
+
+
+<%= link_to 'Edit', edit_insure_results_sub_path(@insure_results_sub) %> |
+<%= link_to 'Back', insure_results_subs_path %>

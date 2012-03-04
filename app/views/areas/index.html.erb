@@ -1,0 +1,29 @@
+<h1>Listing areas</h1>
+
+<table>
+  <tr>
+    <th>Acode</th>
+    <th>Aname</th>
+    <th>Py code</th>
+    <th>Parent</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @areas.each do |area| %>
+  <tr>
+    <td><%= area.acode %></td>
+    <td><%= area.aname %></td>
+    <td><%= area.py_code %></td>
+    <td><%= area.parent %></td>
+    <td><%= link_to 'Show', area %></td>
+    <td><%= link_to 'Edit', edit_area_path(area) %></td>
+    <td><%= link_to 'Destroy', area, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Area', new_area_path %>

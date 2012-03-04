@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Acode:</b>
+  <%= @area.acode %>
+</p>
+
+<p>
+  <b>Aname:</b>
+  <%= @area.aname %>
+</p>
+
+<p>
+  <b>Py code:</b>
+  <%= @area.py_code %>
+</p>
+
+<p>
+  <b>Parent:</b>
+  <%= @area.parent %>
+</p>
+
+
+<%= link_to 'Edit', edit_area_path(@area) %> |
+<%= link_to 'Back', areas_path %>

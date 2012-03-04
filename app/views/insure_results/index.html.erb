@@ -1,0 +1,241 @@
+<div id="querys-insure_result"></div>
+<div id="insure_result-data"></div>
+<div id="insure_result_list-data"></div>
+<%= company_for %>
+<script type="text/javascript" charset="utf-8">
+	Ext.onReady(function(){
+		
+	var formHeight = 90;
+	
+	var selectedRecordId = undefined;
+	
+	var form = new Ext.FormPanel({
+		title:'查询',
+		width:'100%',
+		renderTo:'querys-insure_result',
+		height:formHeight ,
+//		collapsible :true ,
+		labelWidth : 65,
+        labelAlign : "right",
+	 	bodyStyle: 'padding: 5px',//		bodyStyle:'padding:5px 5px 0',
+        defaults: {
+            anchor: '0'
+        } ,
+		keys : [{
+			 key: Ext.EventObject.ENTER,fn:search,scope:this
+		}] ,
+		items: [
+			{
+				layout:'column',
+				border:false,
+				items:[ 
+					{
+						layout:"form",border:false,
+						items : [{
+							columnWidth:.5 , fieldLabel:'年月',  name:'yearmonth' ,width:200,xtype:"textfield"
+						}
+						, 
+						{
+							columnWidth:.5 , fieldLabel:'员工',  name:'emp_name',width:200,xtype:"textfield"
+						} ]
+					}
+				  ,{	layout:'form',border:false,
+						items:[	new Ext.form.ComboBox({
+								fieldLabel:'公司名称',hiddenName:'company' , allowBlank:false,
+								typeAhead:true,triggerAction:'all',emptyText:'请选择...',
+								lazyRender:true,mode:'local',selectOnFocus:true,
+								editable :false,listeners:{
+									select : function(combo ,record , index){
+										search();
+									}
+								},
+								store:new Ext.data.ArrayStore({
+									 fields:[
+									'company',
+									'company_name'
+									],
+									data:TAGS_ALL.concat(COM)
+								}),
+								valueField:'company', 
+								displayField:'company_name'
+							})
+							, 	new Ext.form.ComboBox({
+									fieldLabel:'户口性质',hiddenName:'hukou' ,
+									typeAhead:true,triggerAction:'all',
+									lazyRender:true,mode:'local',selectOnFocus:true,
+									editable :false,emptyText:'请选择...',
+									listeners:{
+										select : function(combo ,record , index){
+											search();
+										}
+									},
+									store:new Ext.data.ArrayStore({
+										 fields:[
+										'hukou',
+										'hukou_name'
+										],
+										data:TAGS_ALL.concat(HUKOU)
+									}),
+									valueField:'hukou', 
+									displayField:'hukou_name'
+								}) 
+						]
+				 }]
+			}]
+	});
+	
+	var colModel = [
+		new Ext.grid.RowNumberer(),
+		 {  dataIndex: 'id',hidden:true}
+		,{  dataIndex:'yearmonth',header:'参保年月'}
+		,{  dataIndex: 'company',header: '公司', width:100 ,renderer:function(value){
+			for (var i in COM){
+				company = COM[i];
+				if(value == company[0]) return company[1];
+			}
+		}}
+		,{  dataIndex: 'emp_name',header:'姓名',width:50 } 
+		,{  dataIndex: 'hukou',header:'户口' , width:40, renderer:function(value){
+			for(var i in HUKOU){
+				status = HUKOU[i];
+				if(value == status[0]) return status[1];
+			}
+			return value;
+		} }							
+	];
+	 store = new Ext.data.JsonStore({
+	        // store configs
+	        autoDestroy: true,
+			baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+	        url: '/insure_results/grid.json',
+	        remoteSort: false,
+	        sortInfo: {
+	            field: 'company',
+	            direction: 'ASC'
+	        },
+	        storeId: 'myStore',
+
+	        // reader configs
+	        idProperty: 'id',
+	        root: 'data',
+	        totalProperty: 'total',
+	        fields: [
+			{  name: 'id'}, {  name: 'company'}, {name: 'emp_name'}, 
+			{ name: 'yearmonth'},{name:'hukou'}
+			]
+	    });
+	
+		var grid_sub = new Ext.grid.GridPanel({
+			frame:true,title:'社保明细',
+			height:Ext.getCmp('dsp-body').getActiveTab().getInnerHeight()- formHeight - 10,
+			monitorResize:true,autoScroll:true,
+			colModel:new Ext.grid.ColumnModel({
+				columns:[
+					{ dataIndex:'insure_type' , header:'社保类型'},
+					{ dataIndex:'insure_item' , header:'社保项目'},
+					{ dataIndex:'insure_base' , header:'基数'},
+					{ dataIndex:'insure_money', header:'应缴金额'}
+				]
+			}) ,
+			loadMask : true, 
+			store : new Ext.data.JsonStore({
+			        // store configs
+			        autoDestroy: true,
+					baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+			        url: '/insure_results_subs/grid.json',
+			        remoteSort: false,
+			        storeId: 'myStore',
+			        // reader configs
+			        idProperty: 'id',
+			        root: 'data',
+			        totalProperty: 'total',
+			        fields: [
+					{  name: 'id'}, {  name: 'insure_type'}, {name: 'insure_item'}, 
+					{ name: 'insure_base'},{name:'insure_money'}
+					]
+			})
+		})
+	
+			var grid = new Ext.grid.GridPanel({ //EditorGridPanel({
+		        store: store,
+				frame:true,
+				title:'社保结果',
+				// renderTo: 'insure_result-data',
+				// width:'100%',
+				height:Ext.getCmp('dsp-body').getActiveTab().getInnerHeight()- formHeight - 10,
+				monitorResize: true,
+				autoScroll:true,
+				//clicksToEdit:1 ,
+		        colModel: new Ext.grid.ColumnModel({
+		            columns: colModel ,
+		            defaults: {
+		                sortable: true
+		            }
+		        }),
+		        loadMask: true,
+		        plugins: [ new Ext.ux.PanelResizer({
+			            minHeight: 100
+			        })],
+				stripeRows: true,
+		       // autoExpandColumn: 'company',
+				listeners: {
+		            render: {
+		                fn: function(){
+		                   	loadData();
+		                }
+		            }
+		        },
+		        viewConfig: {  
+	                 forceFit: true,  
+	                 enableRowBody: true,  
+	                 showPreview: true 
+				} ,
+				bbar: new Ext.PagingToolbar({
+		            store: store,
+		            pageSize: 20,
+					displayInfo: true,
+					displayMsg: '显示第 {0} 条到 {1} 条记录，共 {2} 条' ,
+					plugins: [new Ext.ux.ProgressBarPager()]
+		        }) 
+		    });
+		// edit row-data
+		grid.on('rowclick' , function(grid,rowIndex,event){
+			 edit();
+		});
+	
+	var resultForm = new Ext.FormPanel({
+		 frame:true,renderTo:'insure_result-data',
+		 width:Ext.getCmp('dsp-body').getActiveTab().getInnerWidth(),
+		 height:Ext.getCmp('dsp-body').getActiveTab().getInnerHeight()- formHeight,
+		 layout:'column', items:[{
+			columnWidth:0.6,items:grid
+		 },{
+			columnWidth:0.4,items:grid_sub
+		}]
+	});
+	
+	function edit(){
+		var record = grid.getSelectionModel().getSelected();
+		grid_sub.store.load({
+			params:{
+				start:0 , limit:20 , main_id:record.get("id")
+			}
+		})	
+	}
+	
+	function search(){
+		var formParams = form.getForm().getValues();
+		formParams = Ext.util.JSON.encode(formParams);
+		//alert(formParams);
+		loadData(formParams);
+	}
+	
+	function loadData(formParams){
+		 store.load({
+			params: {
+				start:0 , limit:20, query:[formParams]
+			}
+		})
+	}	
+})
+</script>

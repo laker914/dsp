@@ -1,0 +1,46 @@
+<div id="querys-data"></div>
+<div id="data-grid"></div>
+<script type="text/javascript" charset="utf-8">
+	Ext.onReady(function(){
+		 var formHeight = 120;
+		 var selectedRecordId =  undefined;
+		var form = new DspScaffold.Panel({
+			height:formHeight,
+			items:[{
+					layout:'column', border:false,
+				items:[{
+					columnWidth:.5 , fieldLabel:'社保名称' , name:'insure_name',width:200,xtype:"textfield"
+				}]
+			}]
+		});
+		var addFormPanel = new DspScaffold.FormPanel({
+			id:'addInsureProgramFormPanel' ,
+			baseParams:{<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+			items:[
+				{ fieldLabel:'社保名称',name:'insure_program[insure_name]' , allowBlank:false,anchor:'99%'}
+			]
+		});
+		
+		var colModel = [
+			new Ext.grid.RowNumber(), sm ,
+			{ dataIndex:'id',hidden:true},
+			{ dataIndex:'insure_name' , header:'社保名称',width:50}
+		];
+		store = new Ext.data.JsonStore({
+			 autoDestroy:true,
+			baseParams:{<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+			url:'/'
+		})
+		
+		var grid = new DspScaffold.Grid({
+			title:"社保项目",
+			store:store, 
+			colModel: new Ext.grid.ColumnModel({
+	            columns: colModel ,
+	            defaults: {
+	                sortable: true
+	            }
+	        })
+		});
+	});
+</script>

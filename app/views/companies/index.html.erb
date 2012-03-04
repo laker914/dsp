@@ -1,0 +1,328 @@
+<div id="querys-data" style="border:0;"></div>
+<div id="data-grid"></div>
+<input type="hidden" name="city_id" value="" id="city_id">
+<script type="text/javascript" charset="utf-8">
+	Ext.onReady(function(){
+		
+	var formHeight = 120;
+	var controller_name = "公司信息"
+	var selectedRecordId = undefined;
+		
+	var form = new Ext.FormPanel({
+		title:'查询',
+		width:'100%',
+		renderTo:'querys-data',
+		height:formHeight ,
+//		collapsible :true ,
+		labelWidth : 65,
+        labelAlign : "right",
+	 	bodyStyle: 'padding: 5px',//		bodyStyle:'padding:5px 5px 0',
+        defaults: {
+            anchor: '0'
+        } ,
+		keys : [{
+			 key: Ext.EventObject.ENTER,fn:search,scope:this
+		}] ,
+		items: [
+			{
+				layout:'column',
+				border:false,
+				items:[ 
+					{
+						layout:"form",border:false,
+						items : [
+							{
+								columnWidth:.5 , fieldLabel:'公司编码',  name:'ccode' ,width:200,xtype:"textfield"
+						 	} 	, 
+							{
+								columnWidth:.5 , fieldLabel:'代理方式',  name:'c_method',width:200,xtype:"textfield"
+							} , {
+								columnWidth:.5 , fieldLabel:'组织机构码',  name:'org_code',width:200,xtype:"textfield"
+							}
+						]
+					}
+				 ,{		layout:'form',border:false,
+						items:[
+							{
+								columnWidth:.5 , fieldLabel:'公司名称',  name:'ccname' ,width:200,xtype:"textfield"
+							}, {
+								columnWidth:.5 , fieldLabel:'公司性质',  name:'c_type',width:200,xtype:"textfield"
+							} , {
+								columnWidth:.5 , fieldLabel:'联系人',  name:'contact',width:200,xtype:"textfield"
+							}
+						]
+				 }]
+			}]
+	});
+	
+	 var com_citytree = new ComboBoxTree({
+        fieldLabel:'所属地区',
+		name:'company[city_name]',
+        allowUnLeafClick:true,
+		allowBlank:false,
+        treeHeight:200,
+        url:'/cities/cities_tree',
+	    onSelect:function(id, text){
+			 document.getElementById('city_id').value = id;
+        }
+	});
+	
+	var addFormPanel = new Ext.form.FormPanel({
+		bodyStyle:'padding:5px 5px 0',
+		defaultType:'textfield' , labelAlign:'right',lableWidth:70,frame:false,
+		baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+		items:[
+		{
+			fieldLabel:'公司编号',name:'company[ccode]' ,allowBlank:false,anchor:'99%',width:50
+		},{
+			fieldLabel:'公司名称',name:'company[ccname]' , allowBlank:false,anchor:'99%',width:50
+		},{
+			fieldLabel:'代理方式',name:'company[c_method]',allowBlank:false,anchor:'99%',width:50
+		},{
+			fieldLabel:'公司性质',name:'company[c_type]',allowBlank:false,anchor:'99%'
+		}	,{
+			fieldLabel:'组织机构码',name:'company[org_code]' , allowBlank:false,anchor:'99%'
+		}	,{
+			fieldLabel:'公司地址',name:'company[caddress]', allowBlank:false,anchor:'99%'
+		} 	,
+	 		com_citytree	
+		,{
+			fieldLabel:'社保基数',name:'company[insure_base]',allowBlank:false,anchor:'99%'
+		}	,{
+			fieldLabel:'公积金基数',name:'company[provident_base]',allowBlank:false,anchor:'99%'
+		}	,{
+			fieldLabel:'联系人',name:'company[contact]',allowBlank:false,anchor:'99%'
+		}	,{
+			fieldLabel:'职务',name:'company[job]',allowBlank:false,anchor:'99%'
+		}	,{
+			fieldLabel:'联系电话',name:'company[telphone]',allowBlank:false,anchor:'99%'
+		}	,{
+			fieldLabel:'手机',name:'company[phone]',allowBlank:false,anchor:'99%'
+		}	,{
+			name:'company[id]' , id:"company_id" , hidden :true   //主键值 隐藏 
+		}]
+	});
+	var sm = new Ext.grid.CheckboxSelectionModel();
+	var colModel = [
+		new Ext.grid.RowNumberer(),sm,
+		 {  dataIndex: 'id',hidden:true}
+		,{  dataIndex: 'ccode',header: '二级代码', id: 'ccode' , width:50 }
+		,{  dataIndex: 'ccname',header:'公司名称', id:'ccname' } 
+		,{	dataIndex: 'city_name', header:'所属地区'}
+		,{  dataIndex: 'c_method',header:'代理方式', id:'c_method' , width:50 }
+		,{  dataIndex: 'org_code',header:'组织机构码', id:'org_code' , width:50 }
+		,{  dataIndex: 'caddress',header:'地址',id:'caddress'}
+		,{  dataIndex: 'contact',header:'联系人',id:'contact' , width:30 }
+		/**,{  dataIndex: 'province',header:'省',id:'province' }
+		,{  dataIndex: "city",header:'城市',id:"city"		}
+		,{	dataIndex: 'area',header:'区域',id:'area' }
+		,{  dataIndex: 'phone',header:'电话',id:'phone' } 
+		,{  dataIndex: 'telphone', header:'手机',id:'telphone' } 
+		,{  dataIndex: 'fax',header:'传真',id:'fax' } */
+	];
+	 store = new Ext.data.JsonStore({
+	        // store configs
+	        autoDestroy: true,
+			baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+	        url: '/companies/grid.json',
+	        remoteSort: false,
+	        sortInfo: {
+	            field: 'ccode',
+	            direction: 'ASC'
+	        },
+	        storeId: 'myStore',
+
+	        // reader configs
+	        idProperty: 'id',
+	        root: 'data',
+	        totalProperty: 'total',
+	        fields: [
+			{  name: 'id'}, {  name: 'ccode'}, {name: 'ccname'}, { name: 'caddress'}, 
+			{  name: 'contact'}, { name: 'job'}, { name: 'phone'},	{	name: 'telphone'},
+			{  name: 'fax' } , { name:'city_name'},
+			{  name:'c_method'}, {name:'org_code'}, {name:'c_type'}, {name:'insure_base'}, 
+			{ name:'provident_base'}
+			]
+	    });
+	
+		var grid = new Ext.grid.GridPanel({ //EditorGridPanel({
+	        store: store,
+			frame:true,
+			title:'公司资料',
+			renderTo: 'data-grid',
+			width:'100%',
+			height:Ext.getCmp('dsp-body').getActiveTab().getInnerHeight()- formHeight,
+			monitorResize: true,
+			autoScroll:true,
+			//clicksToEdit:1 ,
+	        colModel: new Ext.grid.ColumnModel({
+	            columns: colModel ,
+	            defaults: {
+	                sortable: true
+	            }
+	        }),
+			sm : sm,
+	        loadMask: true,
+	        plugins: [ new Ext.ux.PanelResizer({
+		            minHeight: 100
+		        })],
+			stripeRows: true,
+	       // autoExpandColumn: 'company',
+			listeners: {
+	            render: {
+	                fn: function(){
+	                   	loadData();
+	                }
+	            }
+	        },
+	        viewConfig: {  
+			                 forceFit: true,  
+			                 enableRowBody: true,  
+			                 showPreview: true 
+			} ,
+			bbar: new Ext.PagingToolbar({
+	            store: store,
+	            pageSize: 20,
+				displayInfo: true,
+				displayMsg: '显示第 {0} 条到 {1} 条记录，共 {2} 条' ,
+				plugins: [new Ext.ux.ProgressBarPager()]
+	        })	 ,
+				tbar:[
+					{ text: '新增' , iconCls:'add-icon'  , handler:function(){
+						create();
+					}
+					},'-',
+					{ text: '删除' , iconCls:'dele-icon' , handler:function(){
+						dele();
+					}
+					}
+				]  
+	    });
+	// edit row-data
+	grid.on('rowdblclick' , function(grid,rowIndex,event){
+		 edit();
+	});
+	
+	var addCompanyWindow = new Ext.Window({
+		layout:'fit',width:400 , height: 420 ,resizable:false,draggable:true,
+		closable:true,modal:true, closeAction:'hide',
+		collapsible:true, maximizable:false, buttonAlign:'right',
+		border:false,animCollapse:true,
+		items:[addFormPanel],
+		buttons:[
+		{
+			text:'保存', iconCls:'save-icon',
+			handler:function(){
+				save();
+			}
+		},{
+			text:'关闭',iconCls:'close-icon',
+			handler:function(){
+				addCompanyWindow.hide();
+			}
+		}]
+	});
+	
+	function create(){
+		selectedRecordId = undefined;
+		addFormPanel.form.reset();
+		addCompanyWindow.setTitle("新增"+controller_name);		
+		addCompanyWindow.show();
+	}
+	
+	function save(){
+		if (!addFormPanel.form.isValid()){
+			return ;
+		}
+		var url = 'companies'
+		var submitOptions = {
+			url : url,
+			method : "POST",
+			params: { format: 'json' ,
+				'company[city_id]': document.getElementById("city_id").value },
+			waitMsg:'正在处理数据,请稍候...',
+			success:function(form,action){
+				addCompanyWindow.hide();
+				store.reload();
+				form.reset();
+			},
+			failure:function(form,action){
+				var errorss = action.result.msg;
+				for(var e in errorss) {
+					alert(e + " -- > "+ errorss[e]);
+				}
+				//Ext.MessageBox.alert("提示",msg);
+			}
+		} ;
+		if (selectedRecordId) {
+			submitOptions.url  = 'companies/'+selectedRecordId;
+			submitOptions.params._method = 'PUT';
+		}
+		addFormPanel.form.submit(submitOptions);
+	}
+	
+	function edit(){
+		var record = grid.getSelectionModel().getSelected();
+		if (Ext.isEmpty(record)){
+			Ext.MessageBox.alert("提示","请选择要修改的记录!");
+			return ;
+		}
+		//addFormPanel.getForm().loadRecord(record);
+		addFormPanel.getForm().load({
+			url:'/companies/'+record.get('id')+'/edit?format=json',
+			method:'GET',
+			success:function(form,action){
+				var a = action.result.data;
+				document.getElementById('city_id').value = a.city_id;
+				com_citytree.setValue(a['company[city_name]']);
+			}
+		});
+		selectedRecordId = record.get('id');
+		addCompanyWindow.setTitle("修改"+controller_name);
+		addCompanyWindow.show();
+	}
+	
+	function dele(){
+		var record = grid.getSelectionModel().getSelections();
+		if (Ext.isEmpty(record)) {
+			Ext.MessageBox.alert("提示","请选择要删除的记录");
+			return ;
+		}
+		var dlist = new Array();
+		for (var i = 0 ; i < record.length ; i++){
+			dlist.push(record[i].data.id);
+		}
+		Ext.Ajax.request({
+			url: 'companies/delete',
+			method:'POST',
+			params:{ 
+				format: 'json',
+				'dlist[]': dlist 
+				<%= " , #{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>	
+			 } ,
+			success:function(response, opts){
+				//alert(Ext.decode(response.responseText).msg);
+				loadData();
+			}, 
+			faild:function(response, opts){
+				alert(Ext.decode(response.responseText).msg);
+			}
+		});
+	}
+	
+	function search(){
+		var formParams = form.getForm().getValues();
+		formParams = Ext.util.JSON.encode(formParams);
+		//alert(formParams);
+		loadData(formParams);
+	}
+	
+	function loadData(formParams){
+		 store.load({
+			params: {
+				start:0 , limit:20, query:[formParams]
+			}
+		})
+	}
+});
+</script>

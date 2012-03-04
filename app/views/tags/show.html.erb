@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Tcode:</b>
+  <%= @tag.tcode %>
+</p>
+
+<p>
+  <b>Tvalue:</b>
+  <%= @tag.tvalue %>
+</p>
+
+<p>
+  <b>Tname:</b>
+  <%= @tag.tname %>
+</p>
+
+<p>
+  <b>Default:</b>
+  <%= @tag.default %>
+</p>
+
+
+<%= link_to 'Edit', edit_tag_path(@tag) %> |
+<%= link_to 'Back', tags_path %>
