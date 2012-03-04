@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  empname: MyString
+  empidn: MyString
+  sex: 1
+  job: MyString
+  bargain_begin: 2012-02-18 13:16:54
+  bargain_end: 2012-02-18 13:16:54
+  emp_month: MyString
+  insure_base: 
+  provident_base: 
+
+two:
+  empname: MyString
+  empidn: MyString
+  sex: 1
+  job: MyString
+  bargain_begin: 2012-02-18 13:16:54
+  bargain_end: 2012-02-18 13:16:54
+  emp_month: MyString
+  insure_base: 
+  provident_base: 

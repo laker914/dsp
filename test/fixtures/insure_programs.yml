@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  insure_name: MyString
+  py_code: MyString
+
+two:
+  insure_name: MyString
+  py_code: MyString

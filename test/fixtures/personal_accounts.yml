@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  province: MyString
+  city: MyString
+  area: MyString
+  item_id: 1
+  hukou: 1
+  fix_value: 9.99
+  rate: 9.99
+  personal_type: 1
+  personal_limit: 9.99
+  personal_lower: 9.99
+  personal_round: 1
+
+two:
+  province: MyString
+  city: MyString
+  area: MyString
+  item_id: 1
+  hukou: 1
+  fix_value: 9.99
+  rate: 9.99
+  personal_type: 1
+  personal_limit: 9.99
+  personal_lower: 9.99
+  personal_round: 1

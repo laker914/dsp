@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  main_id: 1
+  insure_type: 1
+  insure_base: 9.99
+  insure_money: 9.99
+  insure_item: 1
+
+two:
+  main_id: 1
+  insure_type: 1
+  insure_base: 9.99
+  insure_money: 9.99
+  insure_item: 1

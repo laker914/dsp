@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  yearmonth: MyString
+  emp_id: 1
+  emp_name: MyString
+  company: 1
+  hukou: 1
+
+two:
+  yearmonth: MyString
+  emp_id: 1
+  emp_name: MyString
+  company: 1
+  hukou: 1

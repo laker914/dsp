@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  tcode: MyString
+  tvalue: MyString
+  tname: MyString
+  default: 1
+
+two:
+  tcode: MyString
+  tvalue: MyString
+  tname: MyString
+  default: 1

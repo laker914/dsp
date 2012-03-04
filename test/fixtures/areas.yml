@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  acode: MyString
+  aname: MyString
+  py_code: MyString
+  parent: MyString
+
+two:
+  acode: MyString
+  aname: MyString
+  py_code: MyString
+  parent: MyString
