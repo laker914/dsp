@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<%= stylesheet_link_tag "report"%>
+<style media=print>
+.Noprint {
+	display: none;
+}
+
+.PageNext {
+	page-break-after: always;
+}
+</style>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<OBJECT id=WebBrowser classid=CLSID:8856F961-340A-11D0-A96B-00C04FD705A2 height=0 width=0></OBJECT>
+<body leftmargin="0" topmargin="0">
+<!--报表工具部分-->
+<table width="100%" border="0" cellspacing="1" cellpadding="1" align="center">
+	<tr>
+		<td width="80%">
+		<div align="left" class="Noprint"><span id="DisTag" style="display: none">&nbsp;</span></div>
+		</td>
+		<td width="40%">
+		<div align="right" class="Noprint"><input type="button" value="页面设置"  class="box80" onmouseover="className='box81'"
+			onmouseout="className='box80'" onclick="document.all.WebBrowser.ExecWB(8,1);"/> 
+			<input type="button" value="打印预览" class="box80" onmouseover="className='box81'" onmouseout="className='box80'"
+			onclick="document.all.WebBrowser.ExecWB(7,1);"/> 
+			<input type="button" value="打印" class="box80" onmouseover="className='box81'" onmouseout="className='box80'"
+			onclick="document.all.WebBrowser.ExecWB(6,1);"/>  
+			<input type="button" value="Excel" class="box80" onmouseover="className='box81'"
+			onmouseout="className='box80'" onclick="AllAreaExcel();"/> </div>
+		</td>
+	</tr>
+</table>
+<table id="RS" border="0" style="width:100%;" align="center" cellspacing="0" cellpadding="0" bordercolor="#F3F3F3">
+<!--报表表头-->
+	<caption><font color=blue size=3><b>XXX公司<font color=blue size=3><b><br>社保明细表</b></font>
+	</caption>
+	<tr>
+		<td valign="top"><br>
+		<!--<table border="0">
+			<tr bgcolor="#FFFFFF">
+				<td height="21" class="tdStyle" colspan="8" bgcolor="#FFFFFF">&nbsp;&nbsp;<strong><em>地点:
+				<strong><em><font color=blue></font>
+			</tr>
+		</table>
+-->
+		<table align="center" border="2" cellpadding="0" cellspacing="0"
+			style="width:100%; border-collapse: collapse"
+			bordercolorlight="#000000" bordercolordark="#000000">
+<!-- 数据部分标题-->
+			<tr>
+				<td rowspan="2" height="20" align="center" class="tdStyle" >增加日期</td>
+				<td rowspan="2" height="20" align="center" class="tdStyle" >增加方式</td>
+				<td rowspan="2" height="20" align="center" class="tdStyle" >所属公司</td>
+				<td rowspan="2" height="20" align="center" class="tdStyle" >姓名</td>
+				<td rowspan="2" height="20" align="center" class="tdStyle" >开始月份</td>
+				<td rowspan="2" height="20" align="center" class="tdStyle" >基数</td>
+				<td rowspan="2" height="20" align="center" class="tdStyle" >缴费额</td>
+				<td colspan="12" height="20" align="center" class="tdStyle" >月缴费记录</td>
+			</tr>
+			<tr>
+				<td height="20" align="center" class="tdStyle" >1月</td>
+				<td height="20" align="center" class="tdStyle" >2月</td>
+				<td height="20" align="center" class="tdStyle" >3月</td>
+				<td height="20" align="center" class="tdStyle" >4月</td>
+				<td height="20" align="center" class="tdStyle" >5月</td>
+				<td height="20" align="center" class="tdStyle" >6月</td>
+				<td height="20" align="center" class="tdStyle" >7月</td>
+				<td height="20" align="center" class="tdStyle" >8月</td>
+				<td height="20" align="center" class="tdStyle" >9月</td>
+				<td height="20" align="center" class="tdStyle" >10月</td>
+				<td height="20" align="center" class="tdStyle" >11月</td>
+				<td height="20" align="center" class="tdStyle" >12月</td>
+			</tr>
+<!--数据部分-->
+
+			<tr>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+			</tr>
+
+		</table>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

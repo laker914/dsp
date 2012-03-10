@@ -2,13 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>人员花名册</title>
+<title>社保明细</title>
 </head>
+
 <body>
-<label>所属公司
-	
+	<label>所属公司
 <input type="text" name="textfield" />
 </label>
-<%= link_to "Query", "/report_emps/submit" %>
+<p></p>
+<label>姓名
+<input type="text" name="emp_name" />
+</label>
+ <%= link_to "Query", "/report_perminum_details/submit" %>
 </body>
 </html>

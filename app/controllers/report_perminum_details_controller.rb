@@ -1,5 +1,4 @@
-class ReportEmpsController < ApplicationController
-  
+class ReportPerminumDetailsController < ApplicationController
   def query
       respond_to  do |format|
         format.js

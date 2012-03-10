@@ -265,14 +265,14 @@ Ext.onReady(function(){
 	var node_050102 = new Ext.tree.TreeNode({
 		 text:'社保明细',listeners:{
 			'click':function(){
-				 mainPanel.loadClass('/insure_results','社保明细','','aray-insure-details-id');
+				 mainPanel.loadClass('/report_perminum_details/query','社保明细','','aray-insure-details-id');
 			}
 		}
 	})
 	var node_050103 = new Ext.tree.TreeNode({
 		 text:'公积金明细',listeners:{
 			'click':function(){
-				 mainPanel.loadClass('/insure_results','公积金明细','','aray-provident-details-id');
+				 mainPanel.loadClass('/report_providents/query','公积金明细','','aray-provident-details-id');
 			}
 		}
 	})

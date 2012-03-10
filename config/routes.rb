@@ -1,5 +1,13 @@
 AppTrunk02a::Application.routes.draw do
   
+  get "report_providents/query"
+
+  get "report_providents/submit"
+
+  get "report_perminum_details/query"
+
+  get "report_perminum_details/submit"
+
   resources :users
   
   post "sessions/update_password"
@@ -13,12 +21,6 @@ AppTrunk02a::Application.routes.draw do
   get "report_emps/query"
 
   get "report_emps/submit"
-
-  get "report_emp/query"
-
-  get "report_emp/submit"
-
-  get "destroy/report_emp"
 
   get "cities/cities_tree"
   resources :cities
