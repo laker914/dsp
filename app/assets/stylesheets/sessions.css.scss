@@ -1,0 +1,14 @@
+// Place all the styles related to the sessions controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.user {
+    background: url(user.gif) no-repeat scroll 2px 2px transparent;
+}
+.key {
+    background: url(key.gif) no-repeat scroll 2px 2px transparent;
+}
+.key, .user {
+    background-color: #FFFFFF;
+    font-size: 12px;
+    padding-left: 20px;
+}

@@ -3,9 +3,15 @@
 // be included in the compiled file accessible from http://example.com/assets/application.js
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 // the compiled file.
-Ext.BLANK_IMAGE_URL = 'images/s.gif';
-
 var Apps = {} ;
+
+Ext.EventManager.on(window, 'load', function(){
+	 setTimeout(
+		 function() {
+			Ext.get('loading').remove();
+			Ext.get('loading-mask').fadeOut({remove:true});
+			}, 200); 
+});
 
 MainPanel = function(){
     MainPanel.superclass.constructor.call(this , {
@@ -116,7 +122,7 @@ Ext.onReady(function(){
 		   layout:'border', 
 			 items : [{
 				region:'north',contentEl:'north', 
-				layout:'fit', height:40
+				layout:'fit', height:50
 			}, dsp , mainPanel]
 	});
 	
@@ -154,21 +160,21 @@ Ext.onReady(function(){
 	var node_020101 = new Ext.tree.TreeNode({
 		 text:'公司信息',listeners:{
 			'click':function(){
-				 mainPanel.loadClass('companies','公司信息','','companies-id');
+				 mainPanel.loadClass('/companies','公司信息','','companies-id');
 			}
 		}
 	});
 	var node_020102 = new Ext.tree.TreeNode({
 		 text:'社保配置-公司',listeners:{
 			'click':function(){
-				mainPanel.loadClass('company_accounts','社保配置-公司','','company-accounts-id');
+				mainPanel.loadClass('/company_accounts','社保配置-公司','','company-accounts-id');
 			}
 		}
 	});	
 	var node_020103 = new Ext.tree.TreeNode({
 			 text:'社保配置-个人',listeners:{
 				'click':function(){
-					mainPanel.loadClass('personal_accounts','社保配置-个人','','personal-accounts-id');
+					mainPanel.loadClass('/personal_accounts','社保配置-个人','','personal-accounts-id');
 				}
 			}
 		});
@@ -189,7 +195,7 @@ Ext.onReady(function(){
 	var node_030101 = new Ext.tree.TreeNode({
 		text:'员工信息',listeners:{
 			'click':function(){
-				 mainPanel.loadClass('employees','员工信息','','employees-id');
+				 mainPanel.loadClass('/employees','员工信息','','employees-id');
 			}
 		}
 	})
@@ -225,14 +231,14 @@ Ext.onReady(function(){
 	var node_040101 = new Ext.tree.TreeNode({
 		 text:'社保&公积金计算',listeners:{
 			'click':function(){
-				 mainPanel.loadClass('insure_results/calcs','社保&公积金计算','','insure_results_calcs-id');
+				 mainPanel.loadClass('/insure_results/calcs','社保&公积金计算','','insure_results_calcs-id');
 			}
 		}
 	})
 	var node_040102 = new Ext.tree.TreeNode({
 		 text:'社保&公积金查询',listeners:{
 			'click':function(){
-				 mainPanel.loadClass('insure_results','社保&公积金查询','','insure_results-id');
+				 mainPanel.loadClass('/insure_results','社保&公积金查询','','insure_results-id');
 			}
 		}
 	})
@@ -252,21 +258,21 @@ Ext.onReady(function(){
 	var node_050101 = new Ext.tree.TreeNode({
 		 text:'人员花名册',listeners:{
 			'click':function(){
-				 mainPanel.loadClass('report_emps/query','人员花名册','','aray-emp-details-id');
+				 mainPanel.loadClass('/report_emps/query','人员花名册','','aray-emp-details-id');
 			}
 		}
 	})
 	var node_050102 = new Ext.tree.TreeNode({
 		 text:'社保明细',listeners:{
 			'click':function(){
-				 mainPanel.loadClass('insure_results','社保明细','','aray-insure-details-id');
+				 mainPanel.loadClass('/insure_results','社保明细','','aray-insure-details-id');
 			}
 		}
 	})
 	var node_050103 = new Ext.tree.TreeNode({
 		 text:'公积金明细',listeners:{
 			'click':function(){
-				 mainPanel.loadClass('insure_results','公积金明细','','aray-provident-details-id');
+				 mainPanel.loadClass('/insure_results','公积金明细','','aray-provident-details-id');
 			}
 		}
 	})
@@ -296,6 +302,258 @@ Ext.onReady(function(){
 		root:node_0501
 	})
 	 //tree end
+	
+	var closeButton = new Ext.Button({
+				iconCls : 'cancel-icon',
+				iconAlign : 'right',
+				scale : 'medium',
+				width : 30,
+				tooltip : '<span style="font-size:12px">切换用户,安全退出系统</span>',
+				pressed : true,
+				arrowAlign : 'right',
+				renderTo : 'closeDiv',
+				handler : function() {
+					window.location.href = '/sessions/logout';
+				}
+			});
+			
+			var mainMenu = new Ext.menu.Menu({
+							id : 'mainMenu',
+							items : [{
+										text : '密码修改',
+										iconCls : 'key-icon',
+										handler : function() {
+											updateUserInit();
+										}
+									}, {
+										text : '系统锁定',
+										iconCls : 'lock-icon',
+										handler : function() {
+											lockWindow.show();
+											//setCookie("g4.lockflag", '1', 240);
+										}
+									}]
+						});
+						
+						// 首选项
+				var configButton = new Ext.Button({
+							text : '首选项',
+							iconCls : 'config-icon',
+							iconAlign : 'left',
+							scale : 'medium',
+							width : 50,
+							tooltip : '<span style="font-size:12px">首选项设置</span>',
+							pressed : true,
+							renderTo : 'configDiv',
+							menu : mainMenu
+						});		
+							// 系统锁定
+							var lockForm = new Ext.FormPanel({
+									labelWidth : 60,
+									defaultType : 'textfield',
+									labelAlign : 'right',
+									bodyStyle : 'padding:10px 5px 5px 5px',
+									layout : 'form',
+									items : [{
+												fieldLabel : '帐户密码',
+												name : 'password',
+												inputType : 'password',
+												id : 'password_lock',
+												// labelStyle : micolor,
+												allowBlank : false,
+												maxLength : 50,
+												listeners : {
+													specialkey : function(field, e) {
+														if (e.getKey() == Ext.EventObject.ENTER) {
+															unlockSystem();
+														}
+													}
+												},
+												anchor : '100%'
+											}, {
+												xtype : 'panel',
+												border : false,
+												html : '<div style="font-size:12px;margin-left:10px">(提示:系统已成功锁定,解锁请输入登录帐户密码)</div>'
+											}]
+								});
+	function unlockSystem() {
+			// showWaitMsg();
+			if (!lockForm.form.isValid())
+				return;
+			var params = lockForm.getForm().getValues();
+			Ext.Ajax.request({
+						url : '/sessions/unlock?format=json',
+						success : function(response, opts) {
+							var resultArray = Ext.util.JSON.decode(response.responseText);
+							if (resultArray.success) {
+								lockWindow.hide();
+								//setCookie("g4.lockflag", '0', 240);
+							} else {
+								Ext.Msg.alert('提示', '密码错误,请重新输入', function() {
+											lockForm.form.reset();
+											lockForm.findById('password_lock').focus();
+										});
+							}
+						},
+						failure : function(response, opts) {
+								// alert(111)
+						},
+						params : {
+								password: lockForm.findById('password_lock').getValue()	,
+								authenticity_token:form_token
+							}
+					});
+		}		
+						var lockWindow = new Ext.Window({
+										title : '<span class="commoncss">系统锁定</span>',
+										iconCls : 'lock-icon',
+										layout : 'fit',
+										width : 320,
+										height : 130,
+										closeAction : 'hide',
+										collapsible : false,
+										closable : false,
+										maximizable : false,
+										border : false,
+										modal : true,
+										constrain : true,
+										animateTarget : Ext.getBody(),
+										items : [lockForm],
+										listeners : {
+											'show' : function(obj) {
+												lockForm.form.reset();
+												lockForm.findById('password_lock').focus(true, 50);
+											}
+										},
+										buttons : [{
+													text : '解锁',
+													iconCls : 'key-icon',
+													handler : function() {
+														unlockSystem();
+													}
+												}, {
+													text : '重新登录',
+													iconCls : 'relogin-icon',
+													handler : function() {
+														window.location.href = '/sessions/logout';
+													}
+												}]
+									});		
+		
+		var userFormPanel = new Ext.form.FormPanel({
+						defaultType : 'textfield',
+						labelAlign : 'right',
+						labelWidth : 70,
+						frame : false,
+						bodyStyle : 'padding:5px 5px 0',
+						items : [{
+									fieldLabel : '当前密码',
+									name : 'old_password',
+									id : 'old_password',
+									inputType : 'password',
+									maxLength : 50,
+									allowBlank : false,
+									anchor : '99%'
+								}, {
+									fieldLabel : '新密码',
+									name : 'password',
+									id : 'password',
+									inputType : 'password',
+									maxLength : 50,
+									allowBlank : false,
+									anchor : '99%'
+								}, {
+									fieldLabel : '确认新密码',
+									name : 'password_confirmation',
+									id : 'password_confirmation',
+									inputType : 'password',
+									maxLength : 50,
+									allowBlank : false,
+									anchor : '99%'
+								}]
+					});
+
+			var userWindow = new Ext.Window({
+						layout : 'fit',
+						width : 300,
+						height : 205,
+						resizable : false,
+						draggable : true,
+						closeAction : 'hide',
+						modal : true,
+						title : '<span class="commoncss">密码修改</span>',
+						iconCls : 'key-icon',
+						collapsible : true,
+						titleCollapse : true,
+						maximizable : false,
+						buttonAlign : 'right',
+						border : false,
+						animCollapse : true,
+						animateTarget : Ext.getBody(),
+						constrain : true,
+						listeners : {
+							'show' : function(obj) {
+								Ext.getCmp('password2').focus(true,200);
+							}
+						},
+						items : [userFormPanel],
+						buttons : [{
+							text : '保存',
+							iconCls : 'accept-icon',
+							handler : function() {
+								updateUser();
+							}
+						}, {
+							text : '关闭',
+							iconCls : 'close-icon',
+							handler : function() {
+								userWindow.hide();
+							}
+						}]
+					});
+					
+				function updateUserInit(){
+					userFormPanel.form.reset();
+					userWindow.show();
+				}
+				
+				function updateUser(){
+						if (!userFormPanel.form.isValid()) {
+							return ;
+						}
+						old_password = Ext.getCmp('old_password').getValue();
+						password = Ext.getCmp("password").getValue();
+						password_confirmation = Ext.getCmp("password_confirmation").getValue();
+						if (password != password_confirmation) {
+								DspCommon.MessageBox("两次输入的密码不匹配,请重新输入!");
+								Ext.getCmp('password').setValue("");
+								Ext.getCmp("password_confirmation").setValue("");
+								return ;
+						}	
+						userFormPanel.form.submit({
+								url:'/sessions/update_password?format=json',waitTitle:'提示',method:"POST",
+								waitMsg:'正在处理数据,请稍候...',
+								success:function(form,action){
+										Ext.MessageBox.alert('提示',"密码修改成功" , function(){
+											 userWindow.hide();
+										});
+								} ,
+								params : {
+										authenticity_token:form_token
+								},
+								failure:function(form , action){
+									 var flag = action.result.flag;
+									 if (flag == '0') {
+											Ext.MessageBox.alert('提示','您输入的当前密码验证失败,请重新输入',function(){
+													Ext.getCmp("old_password").setValue("");
+													Ext.getCmp("old_password").focus();
+											});
+									} else {
+											DspCommon.MessageBox("密码修改失败");
+									}
+								}
+						});
+				}
 });
 
 var Dsp = {};

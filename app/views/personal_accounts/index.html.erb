@@ -1,6 +1,6 @@
  <div id="personal_accounts-data" style="border:0;"></div>
 <div id="personal_accounts-grid"></div>
-<input type="hidden" name="city_id" value="" id="city_id">
+<input type="hidden" name="personal[city_id]" value="" id="personal[city_id]">
 <%=insure_item_for%>
 <script type="text/javascript" charset="utf-8">
 	Ext.onReady(function(){
@@ -118,9 +118,17 @@
         treeHeight:200,
         url:'/cities/cities_tree',
 	    onSelect:function(id, text){
-			 document.getElementById('city_id').value = id;
+			 document.getElementById('personal[city_id]').value = id;
         }
 	});
+	
+	var fixValue = new Ext.form.TextField({
+		fieldLabel:'定额',name:'personal_account[fix_value]',allowBlank:true,anchor:'99%'
+	});
+	var rateValue = new Ext.form.TextField({
+		fieldLabel:'百分比',name:'personal_account[rate]',allowBlank:false,anchor:'99%'
+	});
+	
 	var addFormPanel = new Ext.form.FormPanel({
 		bodyStyle:'padding:5px 5px 0',
 		defaultType:'textfield' , labelAlign:'right',lableWidth:70,frame:false,
@@ -165,19 +173,20 @@
 					'personal_account[personal_type]','personal_type_name'
 				] , data:RATE
 			}),
+			listeners:{
+				change:function(f , value){
+			 		setValuesByType(value);
+				}
+			},
 			valueField:'personal_account[personal_type]',
 			displayField:'personal_type_name'
 		})
-	 	,{
-			fieldLabel:'定额',name:'personal_account[fix_value]',allowBlank:false,anchor:'99%'
-		}	,{
-			fieldLabel:'定率',name:'personal_account[rate]',allowBlank:false,anchor:'99%'
-		}	,{
+	 	 , rateValue ,fixValue	,{
 			fieldLabel:'支付下限',name:'personal_account[personal_lower]',allowBlank:false,anchor:'99%'
 		}	,{
 			fieldLabel:'支付上限',name:'personal_account[personal_limit]',allowBlank:false,anchor:'99%'
 		},	 new Ext.form.ComboBox({
-					hiddenName:'personal_account[personal_round]',allowBlank:false,fieldLabel:'扣款方式',
+					hiddenName:'personal_account[personal_round]',allowBlank:false,fieldLabel:'精确值',
 					typeAhead:true,triggerAction:'all',lazyRender:true,mode:'local',
 					selectOnFocus:true,editable:false,
 					store:new Ext.data.ArrayStore({
@@ -199,8 +208,8 @@
 		,{  dataIndex: "city_name",header:'所属地区',id:"city"		}
 		,{  dataIndex: "hukou", header:'户口性质',renderer:function(value){
 				for(var i in HUKOU){
-					status = HUKOU[i];
-					if(value == status[0]) return status[1];
+					hukou = HUKOU[i];
+					if(value == hukou[0]) return hukou[1];
 				}
 				return value;
 			}
@@ -218,9 +227,9 @@
 			} 
 		}
 		,{  dataIndex: 'fix_value',header:'定额'} 
-		,{  dataIndex: 'rate',header:'定率', width:50 }
+		,{  dataIndex: 'rate',header:'百分比', width:50 }
 		,{  dataIndex: 'personal_lower',header:'支付下限', width:50 }
-		,{  dataIndex: 'personal_limit',header:'支付下限', width:50 }
+		,{  dataIndex: 'personal_limit',header:'支付上限', width:50 }
 		,{  dataIndex: 'personal_round',header:'精确值', width:70 ,renderer:function(value){
 				for (var i=0; i < ROUND.length; i++) {
 					if(ROUND[i][0] == value) return ROUND[i][1];
@@ -329,6 +338,9 @@
 		selectedRecordId = undefined;
 		addFormPanel.form.reset();
 		addCompanyWindow.setTitle("新增"+controller_name);
+		addFormPanel.getForm().findField('personal_account[personal_round]').setValue(1);
+		addFormPanel.getForm().findField('personal_account[personal_type]').setValue(1);
+		addFormPanel.getForm().findField('personal_account[hukou]').setValue(1);
 		addCompanyWindow.show();
 	}
 
@@ -336,12 +348,12 @@
 		if (!addFormPanel.form.isValid()){
 			return ;
 		}
-		var url = 'personal_accounts'
+		var url = '/personal_accounts'
 		var submitOptions = {
 			url : url,
 			method : "POST",
 			params: { format: 'json' 
-				,'personal_account[city_id]': document.getElementById("city_id").value
+				,'personal_account[city_id]': document.getElementById("personal[city_id]").value
 			},
 			waitMsg:'正在处理数据,请稍候...',
 			success:function(form,action){
@@ -351,14 +363,15 @@
 			},
 			failure:function(form,action){
 				var errorss = action.result.msg;
+				var msg = "";
 				for(var e in errorss) {
-					alert(e + " -- > "+ errorss[e]);
-				}
-				//Ext.MessageBox.alert("提示",msg);
+					msg += errorss[e] + "<br />";
+				} 
+				DspCommon.MessageBox(msg);
 			}
 		} ;
 		if (selectedRecordId) {
-			submitOptions.url  = 'personal_accounts/'+selectedRecordId;
+			submitOptions.url  = '/personal_accounts/'+selectedRecordId;
 			submitOptions.params._method = 'PUT';
 		}
 		addFormPanel.form.submit(submitOptions);
@@ -367,7 +380,7 @@
 	function edit(){
 		var record = grid.getSelectionModel().getSelected();
 		if (Ext.isEmpty(record)){
-			Ext.MessageBox.alert("提示","请选择要修改的记录!");
+			DspCommon.MessageBox("请选择要修改的记录");
 			return ;
 		}
 		//addFormPanel.getForm().loadRecord(record);
@@ -376,9 +389,8 @@
 			method:'GET',
 			success:function(form,action){
 				var a = action.result.data;
-				provinceCombo.setValue(a["personal[province]"]);
-				cityCombo.setValue(a["personal[city]"]);
-				areaCombo.setValue(a["personal[area]"]);
+				document.getElementById('personal[city_id]').value = a["personal_account[city_id]"];
+				setValuesByType(a["personal_account[personal_type]"]);
 			}
 		});
 		selectedRecordId = record.get('id');
@@ -389,7 +401,7 @@
 	function dele(){
 		var record = grid.getSelectionModel().getSelections();
 		if (Ext.isEmpty(record)) {
-			Ext.MessageBox.alert("提示","请选择要删除的记录");
+			DspCommon.MessageBox("请选择要删除的记录");
 			return ;
 		}
 		var dlist = new Array();
@@ -397,7 +409,7 @@
 			dlist.push(record[i].data.id);
 		}
 		Ext.Ajax.request({
-			url: 'personal_accounts/delete',
+			url: '/personal_accounts/delete',
 			method:'POST',
 			params:{ 
 				format: 'json',
@@ -405,11 +417,13 @@
 				<%= " , #{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>	
 			 } ,
 			success:function(response, opts){
-				//alert(Ext.decode(response.responseText).msg);
+				if (msg != ''){
+					DspCommon.MessageBox(Ext.decode(response.responseText).msg);
+				}
 				loadData();
 			}, 
 			faild:function(response, opts){
-				alert(Ext.decode(response.responseText).msg);
+				DspCommon.MessageBox(Ext.decode(response.responseText).msg);
 			}
 		});
 	}
@@ -417,7 +431,6 @@
 	function search(){
 		var formParams = form.getForm().getValues();
 		formParams = Ext.util.JSON.encode(formParams);
-		//alert(formParams);
 		loadData(formParams);
 	}
 
@@ -427,6 +440,11 @@
 				start:0 , limit:20, query:[formParams]
 			}
 		})
+	}
+	// 根据扣款方式判断 百分比和定额 
+	function setValuesByType(value){
+		fixValue.allowBlank = (value == 1);
+		rateValue.allowBlank = !(value == 1);
 	}
 });
 </script>

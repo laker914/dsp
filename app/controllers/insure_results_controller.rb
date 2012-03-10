@@ -10,6 +10,7 @@ class InsureResultsController < ApplicationController
       @calcs = Calcs.new(params[:calcs])
       respond_to  do |format|
           if @calcs.save
+              @calcs.calc_insure
               format.html { redirect_to @calcs, :notice => 'Calcs was successfully updated.' }
               format.json { render :json => {:data => @calcs ,  :success  => true } }
           else

@@ -7,7 +7,6 @@
 	var formHeight = 120;
 	var controller_name = "公司信息"
 	var selectedRecordId = undefined;
-		
 	var form = new Ext.FormPanel({
 		title:'查询',
 		width:'100%',
@@ -234,7 +233,7 @@
 		if (!addFormPanel.form.isValid()){
 			return ;
 		}
-		var url = 'companies'
+		var url = '/companies'
 		var submitOptions = {
 			url : url,
 			method : "POST",
@@ -248,14 +247,15 @@
 			},
 			failure:function(form,action){
 				var errorss = action.result.msg;
+				var msg = "";
 				for(var e in errorss) {
-					alert(e + " -- > "+ errorss[e]);
-				}
-				//Ext.MessageBox.alert("提示",msg);
+					msg += errorss[e] + "<br />";
+				} 
+				DspCommon.MessageBox(msg);
 			}
 		} ;
 		if (selectedRecordId) {
-			submitOptions.url  = 'companies/'+selectedRecordId;
+			submitOptions.url  = '/companies/'+selectedRecordId;
 			submitOptions.params._method = 'PUT';
 		}
 		addFormPanel.form.submit(submitOptions);
@@ -264,7 +264,7 @@
 	function edit(){
 		var record = grid.getSelectionModel().getSelected();
 		if (Ext.isEmpty(record)){
-			Ext.MessageBox.alert("提示","请选择要修改的记录!");
+			DspCommon.MessageBox("请选择要修改的记录!");
 			return ;
 		}
 		//addFormPanel.getForm().loadRecord(record);
@@ -273,8 +273,8 @@
 			method:'GET',
 			success:function(form,action){
 				var a = action.result.data;
-				document.getElementById('city_id').value = a.city_id;
-				com_citytree.setValue(a['company[city_name]']);
+				document.getElementById('city_id').value = a["company[city_id]"];
+//				com_citytree.setValue(a['company[city_name]']);
 			}
 		});
 		selectedRecordId = record.get('id');
@@ -285,7 +285,7 @@
 	function dele(){
 		var record = grid.getSelectionModel().getSelections();
 		if (Ext.isEmpty(record)) {
-			Ext.MessageBox.alert("提示","请选择要删除的记录");
+			DspCommon.MessageBox("请选择要删除的记录!");
 			return ;
 		}
 		var dlist = new Array();
@@ -293,7 +293,7 @@
 			dlist.push(record[i].data.id);
 		}
 		Ext.Ajax.request({
-			url: 'companies/delete',
+			url: '/companies/delete',
 			method:'POST',
 			params:{ 
 				format: 'json',
@@ -301,11 +301,14 @@
 				<%= " , #{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>	
 			 } ,
 			success:function(response, opts){
-				//alert(Ext.decode(response.responseText).msg);
+				var msg = Ext.decode(response.responseText).msg;
+				if (msg != ''){
+					DspCommon.MessageBox(Ext.decode(response.responseText).msg);
+				}
 				loadData();
 			}, 
 			faild:function(response, opts){
-				alert(Ext.decode(response.responseText).msg);
+				DspCommon.MessageBox(Ext.decode(response.responseText).msg);
 			}
 		});
 	}
@@ -313,7 +316,6 @@
 	function search(){
 		var formParams = form.getForm().getValues();
 		formParams = Ext.util.JSON.encode(formParams);
-		//alert(formParams);
 		loadData(formParams);
 	}
 	

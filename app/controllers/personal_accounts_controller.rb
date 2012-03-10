@@ -32,10 +32,10 @@ class PersonalAccountsController < ApplicationController
                    end
                  end
                end
-               notice = "删除数据成功!"
-           rescue 
-               success = false;
-               notice = "删除数据失败!"
+                notice = t(:message_controllers_notices_success)
+             rescue 
+                 success = false;
+                 notice = t(:message_controllers_notices_failed)
            end
        end
        respond_to do |format|

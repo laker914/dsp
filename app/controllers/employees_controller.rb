@@ -33,10 +33,10 @@ class EmployeesController < ApplicationController
                    end
                  end
                end
-               notice = "删除数据成功!"
-           rescue 
-               success = false;
-               notice = "删除数据失败!"
+                notice = t(:message_controllers_notices_success)
+             rescue 
+                 success = false;
+                 notice = t(:message_controllers_notices_failed)
            end
        end
        respond_to do |format|
@@ -69,7 +69,6 @@ class EmployeesController < ApplicationController
   # GET /employees/1/edit
   def edit
     @employee = Employee.find(params[:id])
-    puts @employee.to_ext_json
      respond_to do |format|
           format.html #edit.html.erb
           format.json { render :json  => @employee.to_ext_json  , :success => true }
@@ -80,9 +79,9 @@ class EmployeesController < ApplicationController
   # POST /employees.json
   def create
     @employee = Employee.new(params[:employee])
-    @employee.job_begin = "2012-01-01" if @employee.job_begin.blank?
-    @employee.is_insure = 0
-    @employee.is_provident = 0
+    # @employee.job_begin = "2012-01-01" if @employee.job_begin.blank?
+    # @employee.is_insure = 0
+    # @employee.is_provident = 0
     respond_to do |format|
       if @employee.save
         format.html { redirect_to @employee, :notice => 'Employee was successfully created.' }
@@ -98,7 +97,6 @@ class EmployeesController < ApplicationController
   # PUT /employees/1.json
   def update
     @employee = Employee.find(params[:id])
-
     respond_to do |format|
       if @employee.update_attributes(params[:employee])
         format.html { redirect_to @employee, :notice => 'Employee was successfully updated.' }

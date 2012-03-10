@@ -153,6 +153,7 @@
         body: "如下字段出现错误："
     models:
         companies: '公司信息'
+        employees: '员工信息'
     attributes:
         companies:
            ccode: '二级编码'
@@ -164,5 +165,23 @@
            member_two: '成员二'
            member_three: '成员三'
            member_four: '成员四'
+        employees:
+           empname: '员工姓名'
   submit: '提交'
   create: '创建'
+  application_navigator_title: 'DSP 企业管理平台'
+  
+  
+  message_models_exist_employee: '员工姓名已存在'
+  message_models_exist_empidn: '该公司已存在该身份证号'
+  message_models_exist_account_by_company: '所属地区,户口性质,社保项目必须唯一'
+  message_controllers_notices_hasexist: '公司:%{name}下有%{count}员工,不能删除!'
+  message_controllers_notices_but: '但是'
+  message_controllers_notices_success: '数据删除成功'
+  message_controllers_notices_failed: '数据删除失败'
+  message_file_not_found: '访问路径或文件不存在'
+  message_account_no_activated: '您的帐号还未激活,请立即激活.'
+  message_account_actived_faild: '{{value}} 帐户激活失败.'
+  message_account_locked: '您的帐号已被锁定,无法登录.'
+  message_exist_email: '用户和邮箱必须唯一'
+  message_account_nofound: '用户或者密码不正确'

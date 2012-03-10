@@ -22,22 +22,30 @@ class CompaniesController < ApplicationController
   
   def delete
       keys = params[:dlist]
-      success = false;
-      notice = "";
+      success = false
+      notice = ""
+      hasEmployee = []
       if not keys.nil?
-          begin
+           begin
             Company.transaction do
                 keys.each do |key|
                   if key != ""
                      @company = Company.find(key)
-                     @company.destroy
+                     count = Employee.company_count(@company.id)
+                     if count > 0
+                        hasEmployee << t(:message_controllers_notices_hasexist , :name => @company.ccname , :count  => count)
+                    else 
+                        @company.destroy
+                     end
                   end
                 end
               end
-              notice = "删除数据成功!"
-          rescue 
-              success = false;
-              notice = "删除数据失败!"
+              if hasEmployee.blank? == false
+                notice = t(:message_controllers_notices_success) + '<br>'+ t(:message_controllers_notices_but) + hasEmployee.join('<br>')
+              end
+           rescue 
+               success = false
+               notice = t(:message_controllers_notices_failed)
           end
       end
       respond_to do |format|

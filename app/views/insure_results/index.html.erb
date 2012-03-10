@@ -2,6 +2,7 @@
 <div id="insure_result-data"></div>
 <div id="insure_result_list-data"></div>
 <%= company_for %>
+<%=insure_item_for%>
 <script type="text/javascript" charset="utf-8">
 	Ext.onReady(function(){
 		
@@ -97,8 +98,8 @@
 		,{  dataIndex: 'emp_name',header:'姓名',width:50 } 
 		,{  dataIndex: 'hukou',header:'户口' , width:40, renderer:function(value){
 			for(var i in HUKOU){
-				status = HUKOU[i];
-				if(value == status[0]) return status[1];
+				hukou = HUKOU[i];
+				if(value == hukou[0]) return hukou[1];
 			}
 			return value;
 		} }							
@@ -131,10 +132,21 @@
 			monitorResize:true,autoScroll:true,
 			colModel:new Ext.grid.ColumnModel({
 				columns:[
-					{ dataIndex:'insure_type' , header:'社保类型'},
-					{ dataIndex:'insure_item' , header:'社保项目'},
-					{ dataIndex:'insure_base' , header:'基数'},
-					{ dataIndex:'insure_money', header:'应缴金额'}
+					{ dataIndex:'insure_type' ,width:70, header:'社保类型' , renderer:function(value){
+							return value == 1 ? "公司":"个人";
+						}
+					},
+					{ dataIndex:'insure_item' ,width:100 , header:'社保项目' ,renderer:function(value){
+							for (var i=0; i < ITEM.length; i++) {
+								if(ITEM[i][0] == value) return ITEM[i][1];
+							}
+						}
+					},
+					{ dataIndex:'insure_base' , header:'基数' , align:'right'}
+					,
+					{ dataIndex:'insure_money', header:'应缴金额' , align:'right' 
+					// , renderer:Ext.util.Format.usMoney
+					}
 				]
 			}) ,
 			loadMask : true, 

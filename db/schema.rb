@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120303061540) do
+ActiveRecord::Schema.define(:version => 20120308055502) do
 
   create_table "areas", :force => true do |t|
     t.string   "acode"
@@ -113,6 +113,9 @@ ActiveRecord::Schema.define(:version => 20120303061540) do
     t.string   "c_method"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "hire_date",                                     :null => false
+    t.string   "address"
+    t.string   "remark"
   end
 
   create_table "insure_programs", :force => true do |t|
@@ -172,6 +175,20 @@ ActiveRecord::Schema.define(:version => 20120303061540) do
     t.integer  "default"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string   "login",           :null => false
+    t.string   "hashed_password", :null => false
+    t.string   "login_name"
+    t.integer  "sex"
+    t.string   "email",           :null => false
+    t.string   "login_ip"
+    t.string   "question"
+    t.string   "answer"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "salt",            :null => false
   end
 
 end

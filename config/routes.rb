@@ -1,5 +1,15 @@
 AppTrunk02a::Application.routes.draw do
   
+  resources :users
+  
+  post "sessions/update_password"
+  
+  get "sessions/unlock"
+  
+  get "sessions/login"
+
+  get "sessions/logout"
+
   get "report_emps/query"
 
   get "report_emps/submit"

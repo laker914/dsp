@@ -140,7 +140,11 @@
 				if (value == sex[0]) return sex[1];
 			}
 			return value;
-		} }
+			} 
+		}
+		,{
+			dataIndex: 'hire_date' , header:'入职日期',width:50
+		}
 		,{  dataIndex: 'is_insure',header:'社保状态' ,width:50, renderer:function(value){
 			var color = (value == 1 ? 'green': (value == 2 ? "red":''));
 			for(var i= 0 ; i < STATUS.length ; i++){
@@ -188,7 +192,7 @@
 	        root: 'data',
 	        totalProperty: 'total',
 	        fields: [
-			{  name: 'id'}, {  name: 'company'}, {name: 'empname'}, { name: 'sex'}, 
+			{  name: 'id'}, {  name: 'company'}, {name: 'empname'}, { name: 'sex'}, {name:'hire_date'},
 			{  name: 'is_insure'}, { name: 'insure_base'}, { name: 'is_provident'},	{	name: 'provident_base'},
 			{  name: 'bargain_begin' }, {name:'bargain_end' }, {name:'hukou'}
 			]
@@ -301,33 +305,19 @@
 							}, 
 							{fieldLabel:'身份证',name:'employee[empidn]',allowBlank:false,anchor:'95%',width:200,xtype:'textfield',vtype:'idcard'}
 							,{
+								fieldLabel:'入职日期',name:'employee[hire_date]',allowBlank:false,xtype:'datefield',
+								format:'Y-m-d'
+							},{
 								fieldLabel:'合同开始日期',name:'employee[bargain_begin]',
 								allowBlank:false,format:'Y-m-d',xtype:'datefield'
-								/*,listeners:{
-									change:function(obj,value,oldValue){
-										alert(value.format('yyyy-MM-dd'));
-										var bargainEnd = addFormPanel.getForm().findField("employee[bargain_end]");
-										if (bargainEnd.getValue() != ''){
-											 if(compareDay(value , bargainEnd.getValue()) < 0) {//起 小于 迄
-												Ext.MessageBox.alert("提示","合同开始日期必须小于合同结束日期");
-												bargainEnd.setValue("");
-												return ;
-											 }
-										}
-										alert(addmulYear(value,1));
-										bargainEnd.setValue(addmulYear(value , 1));
-									}
-								}
-								,renderer:function(value){
-									
-								} */
 							}	
-							,{
-								fieldLabel:'代理方式',name:'employee[c_method]',allowBlank:false,anchor:'95%',width:200,xtype:'textfield'
-							},
+							,
 							comboInsure
 							,
-							comboProvident
+							comboProvident,
+							{
+								fieldLabel:'代理方式',name:'employee[c_method]',allowBlank:false,anchor:'95%',width:200,xtype:'textfield'
+							}
 							]
 						}
 						,{
@@ -366,22 +356,25 @@
 								valueField:'employee[company]', 
 								displayField:'company_name'
 							}) ,
-							 combo_sex
+							 combo_sex	, 
+							  combo_hukou
 								,{
 								fieldLabel:'合同结束日期',name:'employee[bargain_end]',allowBlank:false,xtype:'datefield'
 								,format:'Y-m-d'
-							}	, 
-							  combo_hukou
+							}
 							,
 								{
 									fieldLabel:'社保基数',name:'employee[insure_base]',allowBlank:true,anchor:'95%',width:200,xtype:'textfield'	
 								},{
 									fieldLabel:'公积金基数 ',name:'employee[provident_base]',allowBlank:true,anchor:'95%',width:200,xtype:'textfield'
+								},	
+								{
+									fieldLabel:'地址',name:'employee[address]',allowBlank:true,anchor:'95%',width:200,xtype:'textfield'
 								}
 						]
 				}]
 			} , {
-				xtype:'tabpanel',plain:true , activeTab:0 , height:235,
+				xtype:'tabpanel',plain:true , activeTab:0 , height:245,
 				deferredRender:false, defaults:{bodyStyle:'padding:10px'},
 				items:[{
 					title:'其他信息',layout:'form',defaults:{width:230},
@@ -400,8 +393,10 @@
 					,	
 						combo_study
 					, {
+						fieldLabel:'备注',name:'employee[remark]',allowBlank:true,anchor:'75%'
+					},{
 							fieldLabel:'何时参加工作',name:'employee[job_begin]',allowBlank:true,xtype:'datefield',
-							format:'Y-m-d'
+							format:'Y-m-d',width:'50'
 					},{
 							name:'employee[id]', hidden :true   //主键值 隐藏 
 					}]
@@ -507,7 +502,7 @@
 		if (!addFormPanel.form.isValid()){
 			return ;
 		}
-		var url = 'employees'
+		var url = '/employees'
 		var submitOptions = {
 			url : url,
 			method : "POST",
@@ -520,14 +515,15 @@
 			},
 			failure:function(form,action){
 				var errorss = action.result.msg;
+				var msg = "";
 				for(var e in errorss) {
-					alert(e + " -- > "+ errorss[e]);
-				}
-				//Ext.MessageBox.alert("提示",msg);
+					msg += errorss[e] + "<br />";
+				} 
+				DspCommon.MessageBox(msg);
 			}
 		} ;
 		if (selectedRecordId) {
-			submitOptions.url  = 'employees/'+selectedRecordId;
+			submitOptions.url  = '/employees/'+selectedRecordId;
 			submitOptions.params._method = 'PUT';
 		}
 		addFormPanel.form.submit(submitOptions);
@@ -536,7 +532,7 @@
 	function edit(){
 		var record = grid.getSelectionModel().getSelected();
 		if (Ext.isEmpty(record)){
-			Ext.MessageBox.alert("提示","请选择要修改的记录!");
+			DspCommon.MessageBox("请选择要修改的记录");
 			return ;
 		}
 		//addFormPanel.getForm().loadRecord(record);
@@ -552,7 +548,7 @@
 	function dele(){
 		var record = grid.getSelectionModel().getSelections();
 		if (Ext.isEmpty(record)) {
-			Ext.MessageBox.alert("提示","请选择要删除的记录");
+			DspCommon.MessageBox("请选择要删除的记录");
 			return ;
 		}
 		var dlist = new Array();
@@ -560,7 +556,7 @@
 			dlist.push(record[i].data.id);
 		}
 		Ext.Ajax.request({
-			url: 'employees/delete',
+			url: '/employees/delete',
 			method:'POST',
 			params:{ 
 				format: 'json',
@@ -568,11 +564,14 @@
 				<%= " , #{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>	
 			 } ,
 			success:function(response, opts){
-				//alert(Ext.decode(response.responseText).msg);
+				var msg = Ext.decode(response.responseText).msg;
+				if (msg != ''){
+					DspCommon.MessageBox(Ext.decode(response.responseText).msg);
+				}
 				loadData();
 			}, 
 			faild:function(response, opts){
-				alert(Ext.decode(response.responseText).msg);
+					DspCommon.MessageBox(Ext.decode(response.responseText).msg);
 			}
 		});
 	}
@@ -580,7 +579,6 @@
 	function search(){
 		var formParams = form.getForm().getValues();
 		formParams = Ext.util.JSON.encode(formParams);
-		//alert(formParams);
 		loadData(formParams);
 	}
 	

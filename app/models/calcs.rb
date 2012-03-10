@@ -39,12 +39,16 @@ class Calcs < ActiveRecord::Base
         
         # change array to hash
         psn_accounts_hash = accounts_to_hash(psn_accounts)
+        puts "员工数量:" + employees.size.to_s
+
+        # to delete all 
+        delete_insure_result
+        
          employees.each do |employee|
             _company = @company_hash[employee.company.to_s]
-            keys = _company.province + ";"+_company.city+";"+_company.area+";"+employee.hukou.to_s
+            puts _company.city_id.to_s.class
+            keys = _company.city_id.to_s + ";" + employee.hukou.to_s
             # get company account for employee
-            puts keys 
-            puts com_accounts_hash
             with_items_company = com_accounts_hash[keys]
             # if (with_items_company.blank?)  
                # puts "this employee no config company accounts"
@@ -67,6 +71,7 @@ class Calcs < ActiveRecord::Base
     # company items
     def company_items(keys , with_items_company , employee)
         with_items_company.each do |items|
+          puts items
           if employee.is_insure == 0 and items.id > 1
               puts "this employee is not config insure items"
           end
@@ -75,13 +80,12 @@ class Calcs < ActiveRecord::Base
               pus "this employee is not config provident items."
           end
           base = items.id == 1 ? employee.provident_base : employee.insure_base
-          value = base * items.rate / 100
-          value = items.fix_value unless items.company_type == 1 
-          
-          value = compare(items.company_lower , items.company_limit , value)
-          
-          sub = InsureResultsSub.new(:main_id => keys , :insure_type => 1 , :insure_base => base , :insure_item => items.id , :insure_money => value)
-          sub.save
+              value = 0
+              value = base * items.rate / 100  unless items.rate.blank?
+              value = items.fix_value unless items.company_type == 1 
+              value = compare(items.company_lower , items.company_limit , value)
+              sub = InsureResultsSub.new(:main_id => keys , :insure_type => 1 , :insure_base => base , :insure_item => items.item_id , :insure_money => value)
+              sub.save
       end
     end
     # personal items
@@ -94,14 +98,23 @@ class Calcs < ActiveRecord::Base
               pus "this employee is not config provident items."
            end
            base = items.id == 1 ? employee.provident_base : employee.insure_base
-           value = base * items.rate / 100 
+           value = 0
+           value = base * items.rate / 100 unless items.rate.blank?
            value = items.fix_value unless items.personal_type == 1
-           
            value = compare(items.personal_lower , items.personal_limit , value)
-           
-           sub = InsureResultsSub.new(:main_id => keys , :insure_type => 2 , :insure_base => base , :insure_item => items.id , :insure_money => value)
+           sub = InsureResultsSub.new(:main_id => keys , :insure_type => 2 , :insure_base => base , :insure_item => items.item_id , :insure_money => value)
           sub.save
        end
+    end
+    
+    # delete all
+    def delete_insure_result
+        puts "start to delete has record by yearmonth & companys"
+        has_result = InsureResult.with_company_yearmonth(self[:yearmonth],need_calc_company)
+        has_result.each do |result|
+            result.destroy
+        end
+        puts "successfully to delete record ."
     end
     
     # compare 
@@ -149,7 +162,7 @@ class Calcs < ActiveRecord::Base
     def accounts_to_hash(accounts=[])
         c_a_hash = {}
         accounts.each do |account|
-          keys = account.province+';'+account.city+';'+account.area+';'+account.hukou.to_s
+          keys = account.city_id.to_s + ';' + account.hukou.to_s
           c_a_hash[keys]  = [] if c_a_hash[keys].blank?
           c_a_hash[keys] << account
         end
