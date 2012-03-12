@@ -9,10 +9,9 @@ class ApplicationController < ActionController::Base
   before_filter :isvalid_auth, :except => [:login, :logout ,:unlock , :cities_tree]
   
   def isvalid_auth
-      if session[:user_id].blank?
-         puts "哈哈,你的权限失效了啊"
-         redirect_to_login
-      end
+        # if session[:user_id].blank?
+         # redirect_to_login
+      # end
   end
   
   def render_404(options={})
