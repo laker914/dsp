@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
   
-  before_filter :isvalid_auth, :except => [:login, :logout ,:unlock]
+  before_filter :isvalid_auth, :except => [:login, :logout ,:unlock , :cities_tree]
   
   def isvalid_auth
       if session[:user_id].blank?

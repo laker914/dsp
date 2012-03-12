@@ -1,0 +1,43 @@
+<div id="insure_bills">
+<table width="100%">
+<tr>
+<td bgcolor="#CDE3FF">
+<table  width="100%" class="edit_table" align="center" cellpadding="1" cellspacing="1" >
+<tr bgcolor="#FFFFFF">
+        <td  height=26>&nbsp;所属公司<font color="red">*</font>:</td>
+        <td height=26>&nbsp;
+                <%= select(:company , :id , Company.scope_than)%>
+                </td>
+</tr>
+<tr bgcolor="#FFFFFF">
+        <td  height=26>&nbsp;月份(YYYYMM)<font color="red">*</font>:</td>
+        <td height=26>&nbsp;<input type="text" name="month1" id="month1" />
+</td>
+</tr>
+ <tr bgcolor="#FFFFFF">
+        <td colspan="2" align="center">
+                <%= button_to_function "查询" ,"bills()"%>
+                <script type="text/javascript" charset="utf-8">
+				var curr = new Date().format('Ym'); 
+			    document.getElementById("month1").value=curr;
+				function bills(){
+				    var company = document.getElementById("company_id");
+					var calMonth = document.getElementById("month1");
+				    if (company.value == '') {
+				            alert("所属公司必须选择");
+				            company.focus();
+				            return ;
+				    }
+				if(calMonth.value == ''){
+					alert("请输入月份");
+					calMonth.focus();
+					return;
+				}
+				window.open("/report_insure_bills/submit?company_id="+company.value+"&CalMonth="+calMonth.value);
+				}
+                </script>
+        </td>
+        </tr>
+</table>
+</td></tr></table>
+</div>

@@ -1,19 +1,52 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>社保明细</title>
-</head>
-
-<body>
-	<label>所属公司
-<input type="text" name="textfield" />
-</label>
-<p></p>
-<label>姓名
-<input type="text" name="emp_name" />
-</label>
-
-<label><%= link_to '查询' , "/report_providents/submit" %></label>
-</body>
-</html>
+<style type="text/css" media="screen">
+#inputClass{
+	-moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: url(text_bg.gif) repeat-x scroll left top #F7FAFC;
+    border-color: #778899 #AABBCC #AABBCC #8899AA;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    color: #336699;
+    padding: 2px 2px 3px;
+    vertical-align: middle;
+}
+</style>
+<div id="report_providents">
+<table width="100%">
+<tr>
+<td bgcolor="#CDE3FF">
+<table  width="100%" class="edit_table" align="center" cellpadding="1" cellspacing="1" class="qForm">
+<tr bgcolor="#FFFFFF">
+        <td  height=26>&nbsp;所属公司<font color="red">*</font>:</td>
+        <td height=26>&nbsp;
+                <%= select(:company , :id , Company.scope_than)%>
+                </td>
+</tr>
+<tr bgcolor="#FFFFFF">
+        <td  height=26>&nbsp;姓名:</td>
+        <td height=26>&nbsp;<input type="text" name="emp_name" id="empname1" class="inputClass" />
+</td>
+</tr>
+ <tr bgcolor="#FFFFFF">
+        <td colspan="2" align="center">
+                <%= button_to_function "查询" ,"report_providents()"%>
+                <script type="text/javascript" charset="utf-8">
+                        function report_providents(){
+                                var company = document.getElementById("company_id");
+				var empname = document.getElementById("empname1");
+                                if (company.value == '') {
+                                        alert("所属公司必须选择");
+                                        company.focus();
+                                        return ;
+                                }
+				window.open("/report_providents/submit?company_id="+company.value+"&empName="+empname.value);
+                        }
+                </script>
+        </td>
+        </tr>
+</table>
+</td></tr></table></div>

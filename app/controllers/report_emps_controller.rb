@@ -7,7 +7,8 @@ class ReportEmpsController < ApplicationController
   end
 
   def submit
-    @employees = Employee.all
+    @company = Company.find(params[:company_id])
+    @employees = Employee.where(" company = ? ",params[:company_id])
     render :layout  => false
   end
 

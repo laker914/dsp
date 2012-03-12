@@ -5,6 +5,11 @@
 #
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Mayor.create(:name => 'Emanuel', :city => cities.first)
+
+infomations = Infomation.create({
+  :id => 1 , :open_bank => "0123456789",:bank_account => "0123456789",:company => "DSP Soft"
+})
+
 cities = City.create([
   {:id =>	4122	 ,   :name => 	'	中国	'	,:parent_id => 	1	,:lft=>	1	 , :rgt=>	6464	},
   {:id =>	110000	 , :name => 	'	北京市	'	,:parent_id => 	0	,:lft=>	2	 , :rgt=>	39	},

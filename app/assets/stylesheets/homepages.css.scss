@@ -117,30 +117,16 @@ border:1px dotted #a3bae9;
 background:#DFE8F6;
 }
 #dsp-tree .x-tree-node .x-tree-selected a span{
-background:transparent;
-color:#1E4176;
-font-weight:bold;
+	background:transparent;
+	color:#1E4176;
+	font-weight:bold;
 }
-a {
-color: #1E4176;
-}
-a:link {
-color: #1E4176;
-text-decoration: none;
-}
-a:visited {
-color: #555;
-text-decoration: none;
-}
-a:hover {
-text-decoration: underline;
-color: #15428b;
-}
+
 #welcome {
-position:relative;
-top:0;
-left: 0;
-zoom:1;
+	position:relative;
+	top:0;
+	left: 0;
+	zoom:1;
 }
 .col{
 margin:0 250px 0 10px;
@@ -211,7 +197,7 @@ margin:0 0 5px 3px;
 display:none;
 }
 #dsp-body .x-tab-panel-body {
-background:#fff url(../images/default/form/text-bg.gif) repeat-x 0 0;
+background:#fff url(text-bg.gif) repeat-x 0 0;
 }
 #dsp-body .x-panel-body, #doc-body .body-wrap {
 background:transparent !important;
@@ -347,52 +333,6 @@ margin-bottom: 10px;
 	    width: 90px;
 }
 
-#qForm.input{
-	color:#114477;
-	margin:0;
-	vertical-align:middle;
-}
-
-#qForm input.inputTextHover { border: #00ccff 1px solid; }
-
-#qForm input[type="text"], #qForm input[type="password"], #qForm input:focus {
-    -moz-border-bottom-colors: none;
-    -moz-border-image: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
-    background: url(text_bg.gif) repeat-x scroll left top #F7FAFC;
-    border-color: #778899 #AABBCC #AABBCC #8899AA;
-    border-radius: 2px 2px 2px 2px;
-    border-style: solid;
-    border-width: 1px;
-    color: #336699;
-    padding: 2px 2px 3px;
-    vertical-align: middle;
-}
-
-
-#qForm input.inputTextHover {
-	border-color: #00ccff;
-}
-
-#qForm input[type="text"]:hover,#qForm input[type="password"]:hover {
-	border-color: #00ccff;
-}
-#qForm input:hover{
-	border-color: #00ccff;
-}
-
-#qForm input.inputTextFocus {
-	border-color: #FF8800;
-	background: #F7FAFC url(text_bg.gif) repeat-x left top;
-}
-
-#qForm input[type="text"]:focus,#qForm input[type="password"]:focus {
-	border-color: #FF8800;
-	background: #F7FAFC url(text_bg.gif) repeat-x left top;
-}
-
 .add-icon {
  	background-image: url(add.gif) !important;
 }
@@ -422,6 +362,9 @@ margin-bottom: 10px;
 }
 .relogin-icon{
 	background-image: url(relogin.png) !important;
+}
+.chart-icon {
+    background-image: url(chart.gif) !important;
 }
 
 #insure_result-data {

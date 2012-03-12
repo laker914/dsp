@@ -1,0 +1,146 @@
+<div id="chartDiv" style="float:left;width:400px;height:500px;">
+</div>
+<div id="chartCompany" style="float:right;width:500px;height:500px;">
+	
+</div>
+<script type="text/javascript" charset="utf-8">
+	Ext.chart.Chart.CHART_URL = '/FusionCharts/charts.swf';
+	Ext.onReady(function(){
+		var store = new Ext.data.JsonStore({
+			baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+	        fields:['name', 'visits' , 'views'],
+			url: '/charts/employee?format=json',
+	        remoteSort: false,
+	        storeId: 'myStore',
+	        // reader configs
+	        idProperty: 'id',
+	        root: 'data',
+	        totalProperty: 'total'
+	    });
+		
+		var people = new Ext.Panel({
+		        iconCls:'chart-icon',
+		        title: '人数统计表',
+		        frame:true,
+		        renderTo: 'chartDiv',
+		        width:500,
+		        height: 400,//Ext.getCmp('dsp-body').getActiveTab().getInnerHeight(),
+		        layout:'fit',
+
+		        items: {
+		            xtype: 'columnchart',
+		            store: store,
+		            url:'/FusionCharts/charts.swf',
+		            xField: 'name',
+		            yAxis: new Ext.chart.NumericAxis({
+		                displayName: 'Visits'
+		                // labelRenderer : Ext.util.Format.numberRenderer('0,0')
+		            }),
+		            tipRenderer : function(chart, record, index, series){
+		                if(series.yField == 'visits'){
+		                    return record.data.name + "在职人数:"+ Ext.util.Format.number(record.data.visits, '0,0') + "人";
+		                }else{
+		                    return record.data.name + "在职人数:"+ Ext.util.Format.number(record.data.views, '0,0') + "人";
+		                }
+		            },
+		            chartStyle: {
+		                padding: 10,
+		                animationEnabled: true,
+		                font: {
+		                    name: 'Tahoma',
+		                    color: 0x444444,
+		                    size: 11
+		                },
+		                dataTip: {
+		                    padding: 5,
+		                    border: {
+		                        color: 0x99bbe8,
+		                        size:1
+		                    },
+		                    background: {
+		                        color: 0xDAE7F6,
+		                        alpha: .9
+		                    },
+		                    font: {
+		                        name: 'Tahoma',
+		                        color: 0x15428B,
+		                        size: 10,
+		                        bold: true
+		                    }
+		                },
+		                xAxis: {
+		                    color: 0x69aBc8,
+		                    majorTicks: {color: 0x69aBc8, length: 4},
+		                    minorTicks: {color: 0x69aBc8, length: 2},
+		                    majorGridLines: {size: 1, color: 0xeeeeee}
+		                },
+		                yAxis: {
+		                    color: 0x69aBc8,
+		                    majorTicks: {color: 0x69aBc8, length: 4},
+		                    minorTicks: {color: 0x69aBc8, length: 2},
+		                    majorGridLines: {size: 1, color: 0xdfe8f6}
+		                }
+		            },
+		            series: [{
+		                type: 'column',
+		                displayName: '人数',
+		                yField: 'views',
+		                style: {
+		                    // image:"#{image_path(bar.gif)}",
+		                    mode: 'stretch',
+		                    color:0x99BBE8
+		                }
+		            },{
+		                type:'line',
+		                displayName: 'Visits',
+		                yField: 'visits',
+		                style: {
+		                    color: 0x15428B
+		                }
+		            }]
+		        }
+		    });
+		
+		var pie_store = new Ext.data.JsonStore({
+			fields:['company','total'],
+			baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+			url: '/charts/company?format=json',
+	        remoteSort: false,
+	        storeId: 'myStore',
+	        // reader configs
+	        idProperty: 'id',
+	        root: 'data',
+	        totalProperty: 'total'
+		});
+		
+		var company = new Ext.Panel({
+		        width: Ext.getCmp('dsp-body').getActiveTab().getInnerWidth() - 500,
+		        height: 400,//Ext.getCmp('dsp-body').getActiveTab().getInnerHeight(),
+		        title: '客户人数统计',
+		        renderTo: 'chartCompany',
+		        items: {
+		            store: pie_store,
+		            xtype: 'piechart',
+		            dataField: 'total',
+		            categoryField: 'company',
+		            extraStyle:
+		            {
+		                legend:
+		                {
+		                    display: 'bottom',
+		                    padding: 5,
+		                    font:
+		                    {
+		                        family: 'Tahoma',
+		                        size: 13
+		                    }
+		                }
+		            }
+		        }
+		    });
+ 
+		
+		store.load();
+		pie_store.load();
+	})
+</script>

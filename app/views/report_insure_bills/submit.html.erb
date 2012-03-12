@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<%= stylesheet_link_tag "report"%>
+<style media=print>
+.Noprint {
+	display: none;
+}
+
+.PageNext {
+	page-break-after: always;
+}
+</style>
+<title><%=h @company.ccname%>--对账单</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<OBJECT id=WebBrowser classid=CLSID:8856F961-340A-11D0-A96B-00C04FD705A2 height=0 width=0></OBJECT>
+<body leftmargin="0" topmargin="0">
+<!--报表工具部分-->
+<table width="100%" border="0" cellspacing="1" cellpadding="1" align="center">
+	<tr>
+		<td width="80%">
+		<div align="left" class="Noprint"><span id="DisTag" style="display: none">&nbsp;</span></div>
+		</td>
+		<td width="40%">
+		<div align="right" class="Noprint"><input type="button" value="页面设置"  class="box80" onmouseover="className='box81'"
+			onmouseout="className='box80'" onclick="document.all.WebBrowser.ExecWB(8,1);"/> 
+			<input type="button" value="打印预览" class="box80" onmouseover="className='box81'" onmouseout="className='box80'"
+			onclick="document.all.WebBrowser.ExecWB(7,1);"/> 
+			<input type="button" value="打印" class="box80" onmouseover="className='box81'" onmouseout="className='box80'"
+			onclick="document.all.WebBrowser.ExecWB(6,1);"/>  
+			<input type="button" value="Excel" class="box80" onmouseover="className='box81'"
+			onmouseout="className='box80'" onclick="AllAreaExcel();"/> </div>
+		</td>
+	</tr>
+</table>
+<table id="RS" border="0" style="width:100%;" align="center" cellspacing="0" cellpadding="0" bordercolor="#F3F3F3">
+	<caption><font color=blue size=3><b><%=h @company.ccname%><font color=blue size=3><b><br>对账单</b></font>
+	</caption>
+	<tr>
+		<td valign="top"><br>
+<table align="center" border="2" cellpadding="0" cellspacing="0"
+			style="width:90%; border-collapse: collapse"
+			bordercolorlight="#000000" bordercolordark="#000000">
+  <col width="20" span="18" />
+  <tr height="30">
+    <td height="30" colspan="18">帐单日期：<%=params[:CalMonth].slice(0,4)%>年<%=params[:CalMonth].slice(4,2)%>月&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  最迟付款日: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  制作单位：<%=Infomation.available_systemsettings.company%></td>
+  </tr>
+  <tr height="30">
+    <td height="30" colspan="2">新增人员名单</td>
+    <td colspan="13"><%= @news.join(',')%></td>
+    <td colspan="3">合计<%=@news.length%>人</td>
+  </tr>
+  <tr height="30">
+    <td height="30" colspan="2">终止人员名单　</td>
+    <td colspan="13"><%= @quits.join(',')%></td>
+    <td colspan="3">合计<%=@quits.length%>人</td>
+  </tr>
+  <tr height="30">
+    <td colspan="2" height="30">服务反馈及说明</td>
+    <td colspan="16">　</td>
+  </tr>
+  <tr height="30">
+    <td rowspan="2" height="60" width="20">序<br />
+      号</td>
+    <td rowspan="2" width="20" align="center">社保卡号</td>
+    <td rowspan="2" align="center">姓名</td>
+    <td rowspan="2" width="20" align="center">进本单位参保时间</td>
+    <td rowspan="2" width="20" align="center">社保基数</td>
+    <td colspan="4" align="center">社保费用明细</td>
+    <td rowspan="2" width="20" align="center">公积金基数</td>
+    <td colspan="4" align="center">公积金费用明细</td>
+    <td rowspan="2" width="20" align="center">其他费用</td>
+    <td rowspan="2" width="20" align="center">服务费</td>
+    <td rowspan="2" align="center">合计</td>
+    <td width="20" rowspan="2" align="center">备注</td>
+  </tr>
+  <tr height="30">
+    <td height="30" width="20" align="center">企业</td>
+    <td width="20" align="center">补缴</td>
+    <td width="20" align="center">员工</td>
+    <td width="20" align="center">补缴</td>
+    <td width="20" align="center">企业</td>
+    <td width="20" align="center">补缴</td>
+    <td width="20" align="center">员工</td>
+    <td width="20" align="center">补缴</td>
+  </tr>
+<%
+	i = 1
+	suminsurecolu = 0.00
+	sumprovidcolu = 0.00
+	@employees.each do |employee|
+	suminsure = 0.00
+	sumprovid = 0.00
+
+%>
+  <tr height="30">
+    <td height="30" width="20"><%=i%></td>
+    <td><%=h employee.insure_card%></td>
+    <td><%=h employee.empname%></td>
+    <td><%= params[:CalMonth].slice(0,4) %>年<%=params[:CalMonth].slice(4,2)%>月</td>
+    <td width="20" align="right"><%= employee.insure_base%></td>
+	<%
+	money = @moneysPerson[params[:CalMonth] + ";" + employee.company.to_s + ";" + employee.id.to_s]
+	if money.blank?
+	%>
+    	<td width="20" align="right">&nbsp;</td>
+	<%else%>
+	<td width="20" align="right"><%= money[0] %></td>
+	<%
+suminsurecolu = suminsurecolu + money[0].to_f
+suminsure = suminsure + money[0].to_f
+
+end
+%>
+    <td width="20" align="right"> -  </td>
+	<%
+	if money.blank?
+	%>
+    	<td width="20" align="right">&nbsp;</td>
+	<%else%>
+	<td width="20" align="right"><%= money[1] %></td>
+	<%
+suminsurecolu = suminsurecolu + money[1].to_f
+suminsure = suminsure + money[1].to_f
+
+end
+%>
+    <td width="20" align="right"> -  </td>
+    <td width="20" align="right"><%=employee.provident_base%></td>
+	<%
+	moneyCom = @moneysCom[params[:CalMonth] + ";" + employee.company.to_s + ";" + employee.id.to_s]
+	if moneyCom.blank?
+	%>
+    	<td width="20" align="right">&nbsp;</td>
+	<%else%>
+	<td width="20" align="right"><%= moneyCom[0] %></td>
+	<% 
+sumprovidcolu = sumprovidcolu + moneyCom[0].to_f
+sumprovid = sumprovid + moneyCom[0].to_f
+
+	 end
+	%>
+    <td width="20" align="right"> -  </td>
+	<%
+	if moneyCom.blank?
+	%>
+    	<td width="20" align="right">&nbsp;</td>
+	<%else%>
+	<td width="20" align="right"><%= moneyCom[1] %></td>
+	<%
+	sumprovidcolu = sumprovidcolu + moneyCom[1].to_f
+	sumprovid = sumprovid + moneyCom[1].to_f
+
+	end
+	%>
+    <td width="20" align="right"> -  </td>
+    <td width="20" align="right"> - </td>
+    <td width="20" align="right"> - </td>
+    <td width="20" align="right"><%=suminsure + sumprovid%></td>
+    <td>　</td>
+  </tr>
+<%
+i = i + 1
+end
+%>
+    <tr height="30">
+    <td colspan="5" height="30" align="left">费用合计：</td>
+    <td colspan="4" width="20" align="right"><%=suminsurecolu%></td>
+    <td colspan="5" width="20" align="right"><%=sumprovidcolu%></td>
+    <td width="20" align="right"> - </td>
+    <td width="20" align="right"> - </td>
+    <td width="20" align="right"><%=suminsurecolu + sumprovidcolu%></td>
+    <td>　</td>
+  </tr>
+  <tr height="30">
+    <td colspan="18" height="30" align="justify"><%=params[:CalMonth].slice(0,4)%>年<%=params[:CalMonth].slice(4,2)%>月应付款合计(元）：<%=suminsurecolu + sumprovidcolu%>元　　发票金额：<%=suminsurecolu + sumprovidcolu%>元            收据金额：0.00 元（市民卡无发票）</td>
+  </tr>
+  <tr height="30">
+    <td height="30" colspan="18"></td>
+  </tr>
+  <tr height="30">
+    <td height="30" colspan="18" align="left">户名: <%=Infomation.available_systemsettings.company%>  银行帐户：<%=Infomation.available_systemsettings.bank_account%>  开户行：<%=Infomation.available_systemsettings.open_bank%>  </td>
+  </tr>
+</table>
+
+
+		</td>
+	</tr>
+</table>
+</body>
+</html>
+

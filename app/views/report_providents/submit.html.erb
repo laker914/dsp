@@ -15,6 +15,7 @@
 <link rel="STYLESHEET" type="text/css" href="css/font12.css">
 <link rel="STYLESHEET" type="text/css" href="css/tab.css">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title><%=h @company.ccname%>--公积金明细表</title>
 </head>
 <OBJECT id=WebBrowser classid=CLSID:8856F961-340A-11D0-A96B-00C04FD705A2 height=0 width=0></OBJECT>
 <body leftmargin="0" topmargin="0">
@@ -38,7 +39,7 @@
 </table>
 <table id="RS" border="0" style="width:100%;" align="center" cellspacing="0" cellpadding="0" bordercolor="#F3F3F3">
 <!--报表表头-->
-	<caption><font color=blue size=3><b>XXX公司<font color=blue size=3><b><br>公积金明细表</b></font>
+	<caption><font color=blue size=3><b><%=h @company.ccname%><font color=blue size=3><b><br>公积金明细表</b></font>
 	</caption>
 	<tr>
 		<td valign="top"><br>
@@ -54,8 +55,6 @@
 			bordercolorlight="#000000" bordercolordark="#000000">
 <!-- 数据部分标题-->
 			<tr>
-				<td rowspan="2" height="20" align="center" class="tdStyle" >增加日期</td>
-				<td rowspan="2" height="20" align="center" class="tdStyle" >增加方式</td>
 				<td rowspan="2" height="20" align="center" class="tdStyle" >所属公司</td>
 				<td rowspan="2" height="20" align="center" class="tdStyle" >姓名</td>
 				<td rowspan="2" height="20" align="center" class="tdStyle" >开始月份</td>
@@ -78,29 +77,31 @@
 				<td height="20" align="center" class="tdStyle" >12月</td>
 			</tr>
 <!--数据部分-->
-
+<%
+	@employees.each do |employee|
+%>
 			<tr>
+				<td height="20" class="tdStyle" align="right"><%=h @company.ccname%></td>
+				<td height="20" class="tdStyle" align="right"><%=h employee.empname%></td>
+				<td height="20" class="tdStyle" align="right"><%=h Time.parse(employee.bargain_begin).month%></td>
+				<td height="20" class="tdStyle" align="right"><%= employee.provident_base%></td>
+				<td height="20" class="tdStyle" align="right"><%= employee.provident_base%></td>
+				<%
+				@full_year.each do |yearmonth|
+				money = @moneys[yearmonth + ";" + employee.company.to_s + ";" + employee.id.to_s]
+				if money.blank?
+				%>
 				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
+				<%
+				else
+				%>
+				<td height="20" class="tdStyle" align="right"><%= money%></td>
+				<%
+				end
+				end
+				%>
 			</tr>
-
+<% end %>
 		</table>
 		</td>
 	</tr>

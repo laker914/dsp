@@ -23,13 +23,7 @@ MainPanel = function(){
 				tabWidth: 135,
 			  plugins: new Ext.ux.TabCloseMenu(),
 				enableTabScroll: true,
-				activeTab: 0,
-		        items: {
-		            id:'welcome-panel',
-		            title: 'Dashboard',
-		            iconCls:'icon-docs',
-		            autoScroll: true
-		        }
+				activeTab: 0
 			});	
 };
 Ext.extend(MainPanel ,Ext.TabPanel , {
@@ -59,18 +53,18 @@ Ext.extend(MainPanel ,Ext.TabPanel , {
 	} ,
 	loadClass : function(href , title , iconCls , menuid){
   	 var cls = iconCls;
+		 var isclose = (menuid == 'welcome-panel' ? false : true);
 		 var id = 'docs-' + menuid;
 		 var tab=  this.getComponent(id);
 	    var autoLoad = {url : href , scripts:true , nocache: true};
 			var p = this.add(new Ext.Panel({
 				 id : id , cclass : cls , region:'center',
 					autoLoad:autoLoad , layout:'border'
-				 , iconCls: cls , title:title,closable:true
+				 , iconCls: cls , title:title,closable:isclose
 			}));
 			this.setActiveTab(p);
 	}
 }) ;
-
 
 Ext.onReady(function(){
 	 
@@ -125,7 +119,6 @@ Ext.onReady(function(){
 				layout:'fit', height:50
 			}, dsp , mainPanel]
 	});
-	
 	viewport.doLayout();
 	//tree start
 	var node_0101 = new Ext.tree.TreeNode({
@@ -143,8 +136,17 @@ Ext.onReady(function(){
 			}
 		 } ,
 		 expanded:false,id:'id_node_010101'
-	})
+	});
+	var node_010102 = new Ext.tree.TreeNode({
+		 text:'我的信息', listeners:{
+			 'click':function(){
+				mainPanel.loadClass('/infomations','我的信息','','my-infomation-id');
+			}
+		 } ,
+		 expanded:false,id:'id_node_010102'
+	});
 	node_0101.appendChild(node_010101);
+	node_0101.appendChild(node_010102);
 	var treePanel_0101 = new Ext.tree.TreePanel({
 			 autoHeight:false,autoWidth:false,autoScroll:false,
 			 animate:false,rootVisible:false,
@@ -279,14 +281,14 @@ Ext.onReady(function(){
 	var node_050104 = new Ext.tree.TreeNode({
 		 text:'对帐单',listeners:{
 			'click':function(){
-				 mainPanel.loadClass('insure_results','对帐单','','aray-company-dsp-id');
+				 mainPanel.loadClass('/report_insure_bills/query','对帐单','','report_insure_bills-id');
 			}
 		}
 	})
 	var node_050105 = new Ext.tree.TreeNode({
 		 text:'统计指标',listeners:{
 			'click':function(){
-				 mainPanel.loadClass('insure_results','统计指标','','aray-company-sum-id');
+				 mainPanel.loadClass('/charts/query?format=js','统计指标','','aray-company-sum-id');
 			}
 		}
 	})
@@ -554,6 +556,8 @@ Ext.onReady(function(){
 								}
 						});
 				}
+				
+	mainPanel.loadClass('/charts/query?format=js','DashBoard','','welcome-panel');
 });
 
 var Dsp = {};

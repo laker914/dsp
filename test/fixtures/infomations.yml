@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  open_bank: MyString
+  bank_account: MyString
+  company: MyString
+
+two:
+  open_bank: MyString
+  bank_account: MyString
+  company: MyString

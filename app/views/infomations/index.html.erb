@@ -1,0 +1,59 @@
+<div id="infomations_form"></div>
+<script type="text/javascript" charset="utf-8">
+	Ext.onReady(function(){
+		
+	var formHeight = 120;
+	var controller_name = "我的信息"
+	var selectedRecordId = undefined;
+	var form = new Ext.FormPanel({
+		bodyStyle:'padding:5px',width:400,
+		defaultType:'textfield' , labelAlign:'right',lableWidth:70,
+		renderTo:'infomations_form',
+		baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+		items:[
+		{
+			fieldLabel:'我的公司名称',name:'infomation[company]' , allowBlank:false,anchor:'99%',width:50
+		},{
+			fieldLabel:'我的银行帐号',name:'infomation[bank_account]',allowBlank:false,anchor:'99%',width:50
+		},{
+			fieldLabel:'开户行',name:'infomation[open_bank]',allowBlank:false,anchor:'99%'
+		},{
+			name:'infomation[id]' , hidden :true   //主键值 隐藏 
+		}],buttons:[{
+		    text:"修改",
+		    handler:function(){
+			if (!form.form.isValid()){
+				return ;
+			}
+			var url = '/infomations'
+			var submitOptions = {
+				url : url,
+				method : "POST",
+				params: { format: 'json' },
+				waitMsg:'正在处理数据,请稍候...',
+				success:function(form,action){
+					DspCommon.MessageBox("Update Successfuly.");
+				},
+				failure:function(form,action){
+					var errorss = action.result.msg;
+					var msg = "";
+					for(var e in errorss) {
+						msg += errorss[e] + "<br />";
+					} 
+					DspCommon.MessageBox(msg);
+				}
+			} ;
+			submitOptions.url  = '/infomations/1';
+			submitOptions.params._method = 'PUT';
+			form.form.submit(submitOptions);
+		}
+	}]
+	});
+
+	form.getForm().load({
+			url:'/infomations/1/edit?format=json',
+			method:'GET' 
+		});
+ 
+});
+</script>

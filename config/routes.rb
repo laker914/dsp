@@ -1,5 +1,17 @@
 AppTrunk02a::Application.routes.draw do
+  post "infomations/grid"
+  resources :infomations
   
+  get "report_insure_bills/query"
+
+  get "report_insure_bills/submit"
+
+  get "charts/query"
+  
+  get "charts/employee"
+
+  get "charts/submit"
+
   get "report_providents/query"
 
   get "report_providents/submit"
