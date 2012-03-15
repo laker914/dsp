@@ -1,30 +1,27 @@
- .tdstyle_lt {
-	font-size: 12px;
-	color: 004226;	
-	border-left-width: 2px;
-	border-top-width: 2px;
-	border-right-width: 1px;
-	border-bottom-width: 0px;	
-	border-style: solid;
-	border-color: #CCCCCC;
-}
-.tdstyle_mt {
-	font-size: 12px;
-	color: 004226;	
-	border-left-width: 0px;
-	border-top-width: 2px;
-	border-right-width: 1px;
-	border-bottom-width: 0px;	
-	border-style: solid;
-	border-color: #CCCCCC;
-}
-.tdstyle_rt {
-	font-size: 12px;
-	color: 004226;	
-	border-left-width: 0px;
-	border-top-width: 2px;
-	border-right-width: 2px;
-	border-bottom-width: 0px;	
-	border-style: solid;
-	border-color: #CCCCCC;
-}
+.ta{
+     	FILTER: Alpha( style=1,opacity=100,finishOpacity=0,startX=0,finishX=100,startY=50,finishY=50); BACKGROUND-COLOR: blue
+  }
+  .mo{
+		padding-top:3px;border:1px #333333 solid;FILTER: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#c0c0c0,endColorStr=#e5e5e5)
+  }
+  .mu{
+		padding-top:3px;border:1px #333333 solid;background-color:#c0c0c0
+  }
+	.borderTable {
+	     width:90%;
+		 text-align:center;
+		 font: normal small-caps 400 12px 宋体;
+		 border: 1px solid gray;
+		 border-collapse:collapse;
+	}
+	.borderTable td{
+		 text-align: center;
+		 font-size : 12px;
+		 border: 1px solid gray;
+		 border-collapse:collapse;
+		 bordercolorlight: #000000;
+		 bordercolordark: #000000
+	}
+	.tdStyle {
+		font-weight:bold;
+	}

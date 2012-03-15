@@ -10,10 +10,7 @@
 	page-break-after: always;
 }
 </style>
-<link rel="STYLESHEET" type="text/css" href="css/hp.css">
-<link rel="STYLESHEET" type="text/css" href="css/web.css">
-<link rel="STYLESHEET" type="text/css" href="css/font12.css">
-<link rel="STYLESHEET" type="text/css" href="css/tab.css">
+<%= stylesheet_link_tag "report"%>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title><%=h @company.ccname%>--公积金明细表</title>
 </head>
@@ -26,34 +23,19 @@
 		<div align="left" class="Noprint"><span id="DisTag" style="display: none">&nbsp;</span></div>
 		</td>
 		<td width="40%">
-		<div align="right" class="Noprint"><input type="button" value="页面设置"  class="box80" onmouseover="className='box81'"
-			onmouseout="className='box80'" onclick="document.all.WebBrowser.ExecWB(8,1);"/> 
-			<input type="button" value="打印预览" class="box80" onmouseover="className='box81'" onmouseout="className='box80'"
-			onclick="document.all.WebBrowser.ExecWB(7,1);"/> 
-			<input type="button" value="打印" class="box80" onmouseover="className='box81'" onmouseout="className='box80'"
-			onclick="document.all.WebBrowser.ExecWB(6,1);"/>  
-			<input type="button" value="Excel" class="box80" onmouseover="className='box81'"
-			onmouseout="className='box80'" onclick="AllAreaExcel();"/> </div>
+			<div align="right" class="Noprint">
+		        <input type="button" value="页面设置"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(8,1);">
+		        <input type="button" value="打印预览"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(7,1);">
+		        <input type="button" value="打印"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(6,1);">
+		        <input type="button" value="Excel"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="AllAreaExcel();">
+		    </div>
 		</td>
 	</tr>
 </table>
-<table id="RS" border="0" style="width:100%;" align="center" cellspacing="0" cellpadding="0" bordercolor="#F3F3F3">
+<table id="RS" border="0" style="width:100%;" align="center" class="borderTable">
 <!--报表表头-->
 	<caption><font color=blue size=3><b><%=h @company.ccname%><font color=blue size=3><b><br>公积金明细表</b></font>
 	</caption>
-	<tr>
-		<td valign="top"><br>
-		<!--<table border="0">
-			<tr bgcolor="#FFFFFF">
-				<td height="21" class="tdStyle" colspan="8" bgcolor="#FFFFFF">&nbsp;&nbsp;<strong><em>地点:
-				<strong><em><font color=blue></font>
-			</tr>
-		</table>
--->
-		<table align="center" border="2" cellpadding="0" cellspacing="0"
-			style="width:100%; border-collapse: collapse"
-			bordercolorlight="#000000" bordercolordark="#000000">
-<!-- 数据部分标题-->
 			<tr>
 				<td rowspan="2" height="20" align="center" class="tdStyle" >所属公司</td>
 				<td rowspan="2" height="20" align="center" class="tdStyle" >姓名</td>
@@ -78,33 +60,36 @@
 			</tr>
 <!--数据部分-->
 <%
+    @sumMoney = {};
 	@employees.each do |employee|
+		@sumMoney["insure_base"] = 0.0 if @sumMoney["insure_base"].blank?
+		@sumMoney["insure_base"] = employee.provident_base.to_f + @sumMoney["insure_base"]
 %>
 			<tr>
-				<td height="20" class="tdStyle" align="right"><%=h @company.ccname%></td>
-				<td height="20" class="tdStyle" align="right"><%=h employee.empname%></td>
-				<td height="20" class="tdStyle" align="right"><%=h Time.parse(employee.bargain_begin).month%></td>
-				<td height="20" class="tdStyle" align="right"><%= employee.provident_base%></td>
-				<td height="20" class="tdStyle" align="right"><%= employee.provident_base%></td>
+				<td height="20" align="right"><%=h @company.ccname%></td>
+				<td height="20" align="right"><%=h employee.empname%></td>
+				<td height="20" align="right"><%=h Time.parse(employee.bargain_begin).month%></td>
+				<td height="20" align="right"><%= employee.provident_base%></td>
+				<td height="20" align="right"></td>
 				<%
 				@full_year.each do |yearmonth|
-				money = @moneys[yearmonth + ";" + employee.company.to_s + ";" + employee.id.to_s]
-				if money.blank?
-				%>
-				<td height="20" class="tdStyle" align="right">&nbsp;</td>
-				<%
-				else
-				%>
-				<td height="20" class="tdStyle" align="right"><%= money%></td>
-				<%
-				end
+					money = @moneys[yearmonth + ";" + employee.company.to_s + ";" + employee.id.to_s]
+					if money.blank?
+					%>
+					<td height="20" align="right">&nbsp;</td>
+					<%
+					else
+						 @sumMoney[yearmonth] = 0.0 if @sumMoney[yearmonth].blank?
+						 @sumMoney[yearmonth] = money.to_f + @sumMoney[yearmonth]
+					%>
+					<td height="20" align="right"><%= money%></td>
+					<%
+					end
 				end
 				%>
 			</tr>
 <% end %>
-		</table>
-		</td>
-	</tr>
+<%=render(:partial => "/report_perminum_details/sum" )%>
 </table>
 </body>
 </html>

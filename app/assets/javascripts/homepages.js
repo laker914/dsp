@@ -59,7 +59,8 @@ Ext.extend(MainPanel ,Ext.TabPanel , {
 	    var autoLoad = {url : href , scripts:true , nocache: true};
 			var p = this.add(new Ext.Panel({
 				 id : id , cclass : cls , region:'center',
-					autoLoad:autoLoad , layout:'border'
+					autoLoad:autoLoad 
+					//, layout:'border' // if add config layout:'border' then some errors for you "throw"No center region defined in BorderLayout "+g.id"
 				 , iconCls: cls , title:title,closable:isclose
 			}));
 			this.setActiveTab(p);
@@ -76,8 +77,8 @@ Ext.onReady(function(){
 	*/
 	var dsp = new Ext.Panel({
 		  title:"系统导航",layoutConfig:{
-					animate:true,
-					activeOnTop:true
+					animate:true
+					//,activeOnTop:true
 			} ,
 		  region:'west', split:'true',width:210,margins:'0 0 5 0',
 			layout:'accordion',
@@ -145,7 +146,7 @@ Ext.onReady(function(){
 		 } ,
 		 expanded:false,id:'id_node_010102'
 	});
-	node_0101.appendChild(node_010101);
+	// node_0101.appendChild(node_010101);
 	node_0101.appendChild(node_010102);
 	var treePanel_0101 = new Ext.tree.TreePanel({
 			 autoHeight:false,autoWidth:false,autoScroll:false,
@@ -280,7 +281,7 @@ Ext.onReady(function(){
 	})
 	var node_050104 = new Ext.tree.TreeNode({
 		 text:'对帐单',listeners:{
-			'click':function(){
+			click:function(){
 				 mainPanel.loadClass('/report_insure_bills/query','对帐单','','report_insure_bills-id');
 			}
 		}
@@ -296,7 +297,7 @@ Ext.onReady(function(){
 	node_0501.appendChild(node_050102);
 	node_0501.appendChild(node_050103);
 	node_0501.appendChild(node_050104);
-	node_0501.appendChild(node_050105);
+	// node_0501.appendChild(node_050105);
 	var treePanel_0501 = new Ext.tree.TreePanel({
 		 autoHeight:false,autoWidth:false,autoScroll:false,
 		animate:false,rootVisible:false,useArrows:true,

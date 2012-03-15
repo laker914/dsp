@@ -8,6 +8,7 @@
 	var formHeight = 90;
 	var controller_name = "社保配置-个人";
 	var selectedRecordId = undefined;
+	var comboTreeUrl = '/cities/cities_tree<%= "?#{ request_forgery_protection_token }=#{ form_authenticity_token }"%>';
 	var form = new Ext.FormPanel({
 		title:'查询',
 		width:'100%',
@@ -37,7 +38,7 @@
 					            name:'city_id',
 					            allowUnLeafClick:true,
 					            treeHeight:200,
-					            url:'/cities/cities_tree',
+					            url:comboTreeUrl,
 					            onSelect:function(id ,text){
 									search();
 					            }
@@ -116,7 +117,8 @@
         allowUnLeafClick:true,
 		allowBlank:false,
         treeHeight:200,
-        url:'/cities/cities_tree',
+        // url:'/cities/cities_tree',
+ 		url:comboTreeUrl,
 	    onSelect:function(id, text){
 			 document.getElementById('personal[city_id]').value = id;
         }

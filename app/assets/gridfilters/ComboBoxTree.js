@@ -43,7 +43,7 @@ ComboBoxTree = Ext.extend(Ext.form.ComboBox, {
         });
         var combo = this;
         tree.on('beforeload',function(node){
-            tree.loader.dataUrl = combo.url+'?parent_id='+node.id;
+            tree.loader.dataUrl = combo.url+'&parent_id='+node.id;
         });
         tree.on('click',function(node){
             if (combo.allowUnLeafClick == true){

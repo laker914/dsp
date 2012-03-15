@@ -10,6 +10,7 @@
 	page-break-after: always;
 }
 </style>
+<%= stylesheet_link_tag "report" %>
 <title><%=@company.ccname%>公司--人员花名册</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
@@ -22,35 +23,20 @@
 		<div align="left" class="Noprint"><span id="DisTag" style="display: none">&nbsp;</span></div>
 		</td>
 		<td width="40%">
-		<div align="right" class="Noprint"><input type="button" value="页面设置"  class="box80" onmouseover="className='box81'"
-			onmouseout="className='box80'" onclick="document.all.WebBrowser.ExecWB(8,1);"/> 
-			<input type="button" value="打印预览" class="box80" onmouseover="className='box81'" onmouseout="className='box80'"
-			onclick="document.all.WebBrowser.ExecWB(7,1);"/> 
-			<input type="button" value="打印" class="box80" onmouseover="className='box81'" onmouseout="className='box80'"
-			onclick="document.all.WebBrowser.ExecWB(6,1);"/>  
-			<input type="button" value="Excel" class="box80" onmouseover="className='box81'"
-			onmouseout="className='box80'" onclick="AllAreaExcel();"/> </div>
+		<div align="right" class="Noprint">
+        <input type="button" value="页面设置"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(8,1);">
+        <input type="button" value="打印预览"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(7,1);">
+        <input type="button" value="打印"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(6,1);">
+        <input type="button" value="Excel"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="AllAreaExcel();">
+	    </div>
 		</td>
 	</tr>
 </table>
-<table id="RS" border="0" style="width:100%;" align="center" cellspacing="0" cellpadding="0" bordercolor="#F3F3F3">
+<table id="RS" border="0" style="width:100%;" align="center" class="borderTable">
 <!--报表表头-->
 	<caption><font color=blue size=3><b><%=@company.ccname%>公司<font color=blue size=3><b><br>人员花名册</b></font>
 	</caption>
 	<tr>
-		<td valign="top"><br>
-		<!--<table border="0">
-			<tr bgcolor="#FFFFFF">
-				<td height="21" class="tdStyle" colspan="8" bgcolor="#FFFFFF">&nbsp;&nbsp;<strong><em>地点:
-				<strong><em><font color=blue></font>
-			</tr>
-		</table>
--->
-		<table align="center" border="2" cellpadding="0" cellspacing="0"
-			style="width:150%; border-collapse: collapse"
-			bordercolorlight="#000000" bordercolordark="#000000">
-<!-- 数据部分标题-->
-			<tr>
 				<td width="5%" rowspan="2" height="20" align="center" class="tdStyle" >入职日期</td>
 				<td width="10%" rowspan="2" height="20" align="center" class="tdStyle" >所属公司</td>
 				<td width="5%" rowspan="2" height="20" align="center" class="tdStyle" >单位二级码</td>
@@ -81,31 +67,28 @@
 	@employees.each do |employee|
 %>
 			<tr>
-				<td height="20" class="tdStyle" align="left"><%= employee.hire_date%></td>
-				<td height="20" class="tdStyle" align="left"><%=h @company.ccname%></td>
-				<td height="20" class="tdStyle" align="left"><%=h @company.ccode%></td>
-				<td height="20" class="tdStyle" align="left"><%=h employee.insure_card%></td>
-				<td height="20" class="tdStyle" align="left"><%=h employee.empname%></td>
-				<td height="20" class="tdStyle" align="left"><%= employee.sex == 1 ? "Man":"Woman"%></td>
-				<td height="20" class="tdStyle" align="left"><%=h employee.empidn%></td>
-				<td height="20" class="tdStyle" align="left"><%=h employee.national%></td>
-				<td height="20" class="tdStyle" align="left"><%=h employee.education%></td>
-				<td height="20" class="tdStyle" align="left"><%=h employee.job%></td>
-				<td height="20" class="tdStyle" align="left"><%=h employee.bargain_begin%></td>
-				<td height="20" class="tdStyle" align="left"><%=h employee.bargain_end%></td>
-				<td height="20" class="tdStyle" align="left"><%=h Time.parse(employee.bargain_begin).month%></td>
-				<td height="20" class="tdStyle" align="right"><%=h employee.insure_base%></td>
-				<td height="20" class="tdStyle" align="left">&nbsp;</td>
-				<td height="20" class="tdStyle" align="right"><%= employee.provident_base.blank? ? "" : employee.provident_base%></td>
-				<td height="20" class="tdStyle" align="left">&nbsp;</td>
-				<td height="20" class="tdStyle" align="left"><%=h employee.remark%></td>
-				<td height="20" class="tdStyle" align="left"><%=h employee.telphone%></td>
-				<td height="20" class="tdStyle" align="left"><%=h employee.address%></td>
+				<td height="20"  align="left"><%= employee.hire_date%></td>
+				<td height="20"  align="left"><%=h @company.ccname%></td>
+				<td height="20"  align="left"><%=h @company.ccode%></td>
+				<td height="20"  align="left"><%=h employee.insure_card%></td>
+				<td height="20"  align="left"><%=h employee.empname%></td>
+				<td height="20"  align="left"><%= employee.sex == 1 ? "Man":"Woman"%></td>
+				<td height="20"  align="left"><%=h employee.empidn%></td>
+				<td height="20"  align="left"><%=h employee.national%></td>
+				<td height="20"  align="left"><%=h employee.education%></td>
+				<td height="20"  align="left"><%=h employee.job%></td>
+				<td height="20"  align="left"><%=h employee.bargain_begin%></td>
+				<td height="20"  align="left"><%=h employee.bargain_end%></td>
+				<td height="20"  align="left"><%=h Time.parse(employee.bargain_begin).month%></td>
+				<td height="20"  align="right"><%=h employee.insure_base%></td>
+				<td height="20"  align="left">&nbsp;</td>
+				<td height="20"  align="right"><%= employee.provident_base.blank? ? "" : employee.provident_base%></td>
+				<td height="20"  align="left">&nbsp;</td>
+				<td height="20"  align="left"><%=h employee.remark%></td>
+				<td height="20"  align="left"><%=h employee.telphone%></td>
+				<td height="20"  align="left"><%=h employee.address%></td>
 			</tr>
 <%end%>
 		</table>
-		</td>
-	</tr>
-</table>
 </body>
 </html>

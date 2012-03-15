@@ -1,52 +1,59 @@
-<style type="text/css" media="screen">
-#inputClass{
-	-moz-border-bottom-colors: none;
-    -moz-border-image: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
-    background: url(text_bg.gif) repeat-x scroll left top #F7FAFC;
-    border-color: #778899 #AABBCC #AABBCC #8899AA;
-    border-radius: 2px 2px 2px 2px;
-    border-style: solid;
-    border-width: 1px;
-    color: #336699;
-    padding: 2px 2px 3px;
-    vertical-align: middle;
-}
-</style>
 <div id="report_providents">
-<table width="100%">
-<tr>
-<td bgcolor="#CDE3FF">
-<table  width="100%" class="edit_table" align="center" cellpadding="1" cellspacing="1" class="qForm">
-<tr bgcolor="#FFFFFF">
-        <td  height=26>&nbsp;所属公司<font color="red">*</font>:</td>
-        <td height=26>&nbsp;
-                <%= select(:company , :id , Company.scope_than)%>
-                </td>
-</tr>
-<tr bgcolor="#FFFFFF">
-        <td  height=26>&nbsp;姓名:</td>
-        <td height=26>&nbsp;<input type="text" name="emp_name" id="empname1" class="inputClass" />
-</td>
-</tr>
- <tr bgcolor="#FFFFFF">
-        <td colspan="2" align="center">
-                <%= button_to_function "查询" ,"report_providents()"%>
-                <script type="text/javascript" charset="utf-8">
-                        function report_providents(){
-                                var company = document.getElementById("company_id");
-				var empname = document.getElementById("empname1");
-                                if (company.value == '') {
-                                        alert("所属公司必须选择");
-                                        company.focus();
-                                        return ;
-                                }
-				window.open("/report_providents/submit?company_id="+company.value+"&empName="+empname.value);
-                        }
-                </script>
-        </td>
-        </tr>
-</table>
-</td></tr></table></div>
+<%= company_for %>	
+<style type="text/css" media="screen">
+	.x-column {
+	    float: left;
+	    margin: 5px;
+	    overflow: hidden;
+		padding:5px;
+	}
+</style>
+<script type="text/javascript" charset="utf-8">
+Ext.onReady(function(){
+	var emp_form = new Ext.FormPanel({
+		title:"公积金明细",
+		frame:true,
+		labelAlign:'right',lableWidth:70,
+		height:Ext.getCmp('dsp-body').getActiveTab().getInnerHeight(),
+		renderTo:'report_providents',
+		baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+		items:[
+				{
+					layout:'column',
+					border:false,bodyStyle:'padding:10px;',
+					items:[
+					{	layout:"form",border:false,
+						items:[
+						  new Ext.form.ComboBox({
+							fieldLabel:'所属公司', allowBlank:false,
+							typeAhead:true,triggerAction:'all',emptyText:'请选择...',
+							lazyRender:true,mode:'local',selectOnFocus:true,	
+							hiddenName:'company',editable :false ,
+							store:new Ext.data.ArrayStore({
+							 	fields:['company','company_name'], data:TAGS_ALL.concat(COM)
+								}),
+							valueField:'company', displayField:'company_name' })
+							,{
+								fieldLabel:'姓名',name:'empname' ,allowBlank:true,width:165,xtype:'textfield'
+							}
+						] 
+					} ,	{	layout:"form",border:false,
+							items:[
+								new Ext.Button({
+									text:"&nbsp;&nbsp;查&nbsp;询&nbsp;",iconCls:'search-icon',handler:function(){
+										if(!emp_form.form.isValid()){
+											return ;
+										}
+										var company = emp_form.getForm().findField("company").getValue();
+										var empname = emp_form.getForm().findField("empname").getValue();
+		                              window.open("/report_providents/submit?company_id="+company+"&empName="+empname);
+									}
+								})
+							]
+						}
+					]
+				}
+			]
+		})
+});
+</script>

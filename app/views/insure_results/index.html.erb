@@ -85,6 +85,9 @@
 			}]
 	});
 	
+	var curr = new Date().format('Ym'); 
+    form.getForm().findField("yearmonth").setValue(curr);
+	
 	var colModel = [
 		new Ext.grid.RowNumberer(),
 		 {  dataIndex: 'id',hidden:true}
@@ -193,7 +196,7 @@
 				listeners: {
 		            render: {
 		                fn: function(){
-		                   	loadData();
+		                   	// loadData();
 		                }
 		            }
 		        },
@@ -249,5 +252,7 @@
 			}
 		})
 	}	
+	
+	search();
 })
 </script>

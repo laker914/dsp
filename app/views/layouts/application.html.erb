@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" /> 
   <title><%=t(:application_navigator_title)%></title>
-  <%= stylesheet_link_tag    "application" %>
+    <%= stylesheet_link_tag    "application" %>
 	<%= stylesheet_link_tag "GridFilters","RangeMenu"%>
 	<%= javascript_include_tag "ext-base", "ext-all","SelectBox","ComboBoxTree"%>
 	<%= javascript_include_tag "RangeMenu","ListMenu","GridFilters","idcard"%>
@@ -57,6 +58,8 @@
 		src="<%= image_path('ajax1.gif')%>"
 		width=36 align=absMiddle>正在初始化,请稍等...</DIV>
 	</DIV>			
-
+<div id="dsp-body">
+	
+</div>
 </body>
 </html>

@@ -23,25 +23,17 @@
 		<div align="left" class="Noprint"><span id="DisTag" style="display: none">&nbsp;</span></div>
 		</td>
 		<td width="40%">
-		<div align="right" class="Noprint"><input type="button" value="页面设置"  class="box80" onmouseover="className='box81'"
-			onmouseout="className='box80'" onclick="document.all.WebBrowser.ExecWB(8,1);"/> 
-			<input type="button" value="打印预览" class="box80" onmouseover="className='box81'" onmouseout="className='box80'"
-			onclick="document.all.WebBrowser.ExecWB(7,1);"/> 
-			<input type="button" value="打印" class="box80" onmouseover="className='box81'" onmouseout="className='box80'"
-			onclick="document.all.WebBrowser.ExecWB(6,1);"/>  
-			<input type="button" value="Excel" class="box80" onmouseover="className='box81'"
-			onmouseout="className='box80'" onclick="AllAreaExcel();"/> </div>
+			<div align="right" class="Noprint">
+		        <input type="button" value="页面设置"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(8,1);">
+		        <input type="button" value="打印预览"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(7,1);">
+		        <input type="button" value="打印"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(6,1);">
+		        <input type="button" value="Excel"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="AllAreaExcel();">
+		    </div>
 		</td>
 	</tr>
 </table>
-<table id="RS" border="0" style="width:100%;" align="center" cellspacing="0" cellpadding="0" bordercolor="#F3F3F3">
-	<caption><font color=blue size=3><b><%=h @company.ccname%><font color=blue size=3><b><br>对账单</b></font>
-	</caption>
-	<tr>
-		<td valign="top"><br>
-<table align="center" border="2" cellpadding="0" cellspacing="0"
-			style="width:90%; border-collapse: collapse"
-			bordercolorlight="#000000" bordercolordark="#000000">
+<table id="RS" align="center" border="2" cellpadding="0" cellspacing="0" class="borderTable">
+	<caption><font color=blue size=3><b><%=h @company.ccname%><font color=blue size=3><b><br>对账单</b></font></caption>
   <col width="20" span="18" />
   <tr height="30">
     <td height="30" colspan="18">帐单日期：<%=params[:CalMonth].slice(0,4)%>年<%=params[:CalMonth].slice(4,2)%>月&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  最迟付款日: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  制作单位：<%=Infomation.available_systemsettings.company%></td>
@@ -184,10 +176,6 @@ end
   </tr>
 </table>
 
-
-		</td>
-	</tr>
-</table>
 </body>
 </html>
 
