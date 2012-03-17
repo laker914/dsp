@@ -11,7 +11,7 @@
 	page-break-after: always;
 }
 </style>
-<title><%=h @company.ccname%>--社保明细表</title>
+<title>社保明细表</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <OBJECT id=WebBrowser classid=CLSID:8856F961-340A-11D0-A96B-00C04FD705A2 height=0 width=0></OBJECT>
@@ -32,11 +32,18 @@
 		</td>
 	</tr>
 </table>
-<table id="RS" border="0" style="width:100%;" align="center" class="borderTable">
-<!--报表表头-->
-	<caption><font color=blue size=3><b><%=h @company.ccname%><font color=blue size=3><b><br>社保明细表</b></font>
-	</caption>
-<!-- 数据部分标题-->
+<table id="RS" style="width:100%;">
+	<%
+	 @newcompany.each_key do |key|
+		company = @newcompany[key]
+ 	%>
+	<tr>
+		<td>
+			<table  border="0" style="width:100%;" align="center" class="borderTable">
+			<!--报表表头-->
+				<caption><font color=blue size=3><b><%=h company.ccname%><font color=blue size=3><b><br>社保明细表</b></font>
+				</caption>
+			<!-- 数据部分标题-->
 			<tr>
 				<td rowspan="2" height="20" align="center" class="tdStyle" >所属公司</td>
 				<td rowspan="2" height="20" align="center" class="tdStyle" >姓名</td>
@@ -59,22 +66,25 @@
 				<td height="20" align="center" class="tdStyle" >11月</td>
 				<td height="20" align="center" class="tdStyle" >12月</td>
 			</tr>
-<!--数据部分-->
-<%
- @sumMoney = {};
- @employees.each do |employee|  
-	@sumMoney["insure_base"] = 0.0 if @sumMoney["insure_base"].blank?
-	@sumMoney["insure_base"] = employee.insure_base.to_f + @sumMoney["insure_base"]
-%>
+			<!--数据部分-->
+			<%
+			 	@sumMoney = {};
+				@sum_people = 0
+			 	@employees.each do |employee|  
+				if company.id == employee.companys.id
+					@sum_people += 1
+					@sumMoney["insure_base"] = 0.0 if @sumMoney["insure_base"].blank?
+					@sumMoney["insure_base"] = employee.insure_base.to_f + @sumMoney["insure_base"]
+			%>
 			<tr>
-				<td height="20" align="right"><%=h @company.ccname%></td>
+				<td height="20" align="right"><%=h company.ccname%></td>
 				<td height="20" align="right"><%=h employee.empname%></td>
 				<td height="20" align="right"><%=h Time.parse(employee.bargain_begin).month%></td>
 				<td height="20" align="right"><%=h employee.insure_base%></td>
 				<td height="20" align="right"></td>
 				<%
 				@full_year.each do |yearmonth|
-					money = @moneys[yearmonth + ";" + employee.company.to_s + ";" + employee.id.to_s]
+					money = @moneys[yearmonth + ";" + company.id.to_s + ";" + employee.id.to_s]
 					if money.blank?
 					%>
 					<td height="20" align="right">&nbsp;</td>
@@ -87,10 +97,18 @@
 					<%
 					end
 				end
+				
 				%>
 			</tr>
-<% end %>
-<%=render(:partial => "sum" )%>
+		<% 
+			end
+	      end
+		 %>
+	 <%=render(:partial => "sum" )%>
+     </table>
+   </td>
+  </tr>
+<%end %>
 </table>
 </body>
 </html>

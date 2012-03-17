@@ -1,5 +1,7 @@
 class Company < ActiveRecord::Base
   
+  has_many :employees, :foreign_key => "company"
+  
   def self.scope_than
      company = Company.all
      company_array = []

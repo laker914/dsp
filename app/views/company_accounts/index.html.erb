@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+</head>
+<body>
 <div id="company_accounts-data" style="border:0;"></div>
 <div id="company_accounts-grid"></div>
 <input type="hidden" name="city_id" value="" id="city_id">
@@ -22,7 +28,7 @@
             anchor: '0'
         } ,
 		keys : [{
-			 key: Ext.EventObject.ENTER,fn:search,scope:this
+			 key: Ext.EventObject.ENTER,fn:company_search,scope:this
 		}] ,
 		items: [
 			{
@@ -40,7 +46,7 @@
 					            treeHeight:200,
 					            url: comboTreeUrl,
 					            onSelect:function(id ,text){
-									search();
+									company_search();
 					            }
 							}
 								, 	
@@ -51,7 +57,7 @@
 											editable :false,emptyText:'请选择...',
 											listeners:{
 												select : function(combo ,record , index){
-													search();
+													company_search();
 												}
 											},
 											store:new Ext.data.ArrayStore({
@@ -75,7 +81,7 @@
 										editable :false,emptyText:'请选择...',
 										listeners:{
 											select : function(combo ,record , index){
-												search();
+												company_search();
 											}
 										},
 										store:new Ext.data.ArrayStore({
@@ -94,7 +100,7 @@
 												editable :false,emptyText:'请选择...',
 												listeners:{
 													select : function(combo ,record , index){
-														search();
+														company_search();
 													}
 												},
 												store:new Ext.data.ArrayStore({
@@ -205,7 +211,7 @@
 		}]
 	});
 	var sm = new Ext.grid.CheckboxSelectionModel();
-	var colModel = [
+	var company_colModel = [
 		new Ext.grid.RowNumberer(),sm,
 		 {  dataIndex: 'id',hidden:true}
 		,{  dataIndex: "city_name",header:'所属地区',id:"city"		}
@@ -240,7 +246,7 @@
 			}
 		}
 	];
-	 store = new Ext.data.JsonStore({
+	 company_store = new Ext.data.JsonStore({
 	        // store configs
 	        autoDestroy: true,
 			baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
@@ -259,8 +265,8 @@
 			]
 	    });
 	
-		var grid = new Ext.grid.GridPanel({ //EditorGridPanel({
-	        store: store,
+		var company_grid = new Ext.grid.GridPanel({ //EditorGridPanel({
+	        store: company_store,
 			frame:true,
 			title:'公司资料',
 			renderTo: 'company_accounts-grid',
@@ -270,7 +276,7 @@
 			autoScroll:true,
 			//clicksToEdit:1 ,
 	        colModel: new Ext.grid.ColumnModel({
-	            columns: colModel ,
+	            columns: company_colModel ,
 	            defaults: {
 	                sortable: true
 	            }
@@ -285,17 +291,17 @@
 			listeners: {
 	            render: {
 	                fn: function(){
-	                   	loadData();
+	                   	company_loadData();
 	                }
 	            }
 	        },
 	        viewConfig: {  
-			                 forceFit: true,  
-			                 enableRowBody: true,  
-			                 showPreview: true 
+                 forceFit: true,  
+                 enableRowBody: true,  
+                 showPreview: true 
 			} ,
 			bbar: new Ext.PagingToolbar({
-	            store: store,
+	            store: company_store,
 	            pageSize: 20,
 				displayInfo: true,
 				displayMsg: '显示第 {0} 条到 {1} 条记录，共 {2} 条' ,
@@ -313,7 +319,7 @@
 				]  
 	    });
 	// edit row-data
-	grid.on('rowdblclick' , function(grid,rowIndex,event){
+	company_grid.on('rowdblclick' , function(grid,rowIndex,event){
 		 edit();
 	});
 	
@@ -361,7 +367,7 @@
 			waitMsg:'正在处理数据,请稍候...',
 			success:function(form,action){
 				addCompanyWindow.hide();
-				store.reload();
+				company_store.reload();
 				form.reset();
 			},
 			failure:function(form,action){
@@ -381,7 +387,7 @@
 	}
 	
 	function edit(){
-		var record = grid.getSelectionModel().getSelected();
+		var record = company_grid.getSelectionModel().getSelected();
 		if (Ext.isEmpty(record)){
 			DspCommon.MessageBox("请选择要修改的记录");
 			return ;
@@ -403,7 +409,7 @@
 	}
 	
 	function dele(){
-		var record = grid.getSelectionModel().getSelections();
+		var record = company_grid.getSelectionModel().getSelections();
 		if (Ext.isEmpty(record)) {
 			DspCommon.MessageBox("请选择要删除的记录");
 			return ;
@@ -424,7 +430,7 @@
 				if (msg != ''){
 					DspCommon.MessageBox(Ext.decode(response.responseText).msg);
 				}
-				loadData();
+				company_loadData();
 			}, 
 			faild:function(response, opts){
 				DspCommon.MessageBox(Ext.decode(response.responseText).msg);
@@ -432,14 +438,14 @@
 		});
 	}
 	
-	function search(){
+	function company_search(){
 		var formParams = form.getForm().getValues();
 		formParams = Ext.util.JSON.encode(formParams);
-		loadData(formParams);
+		company_loadData(formParams);
 	}
 	
-	function loadData(formParams){
-		 store.load({
+	function company_loadData(formParams){
+		 company_store.load({
 			params: {
 				start:0 , limit:20, query:[formParams]
 			}
@@ -452,3 +458,5 @@
 	}
 });
 </script>
+</body>
+</html>

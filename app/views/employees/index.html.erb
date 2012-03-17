@@ -181,10 +181,10 @@
 			baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
 	        url: '/employees/grid.json',
 	        remoteSort: false,
-	        sortInfo: {
+	        /**sortInfo: {
 	            field: 'company',
 	            direction: 'ASC'
-	        },
+	        }, */
 	        storeId: 'myStore',
 
 	        // reader configs
@@ -255,6 +255,19 @@
 			}) , valueField:'employee[sex]',displayField:'sex_name'
 		});
 		
+		var combo_proxy = new Ext.form.ComboBox({
+			hiddenName : 'employee[c_method]',
+			fieldLabel : '代理方式', allowBlank:false ,
+			typeAhead  : true ,triggerAction:'all',
+			lazyRender:true,mode:'local',selectOnFocus:true,
+			editable:false,
+			store:new Ext.data.ArrayStore({
+				fields:['employee[c_method]','c_method_name'],
+				data : proxy
+			}),
+			valueField:'employee[c_method]' , displayField:'c_method_name'
+		})
+		
 		var combo_hukou = new Ext.form.ComboBox({
 			hiddenName:'employee[hukou]',
 			fieldLabel:'户口性质',allowBlank:false,
@@ -315,9 +328,7 @@
 							comboInsure
 							,
 							comboProvident,
-							{
-								fieldLabel:'代理方式',name:'employee[c_method]',allowBlank:false,anchor:'95%',width:200,xtype:'textfield'
-							}
+							combo_proxy
 							]
 						}
 						,{
@@ -417,7 +428,7 @@
 	        colModel: new Ext.grid.ColumnModel({
 	            columns: colModel ,
 	            defaults: {
-	                sortable: true
+	                // sortable: true
 	            }
 	        }),
 			sm : sm,

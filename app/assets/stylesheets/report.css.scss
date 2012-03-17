@@ -22,6 +22,26 @@
 		 bordercolorlight: #000000;
 		 bordercolordark: #000000
 	}
+	.borderTable1 {
+	     width:90%;
+		 font: normal small-caps 400 12px 宋体;
+		 border: 1px solid gray;
+		 border-collapse:collapse;
+		 margin:1px;
+		 padding:1px;
+	}
+	.borderTable1 td{
+		 font-size : 12px;
+		 border: 1px solid gray;
+		 border-collapse:collapse;
+		 bordercolorlight: #000000;
+		 bordercolordark: #000000;
+		 margin:1px;
+		 padding:1px;
+	}
+	
 	.tdStyle {
 		font-weight:bold;
 	}
+	
+	

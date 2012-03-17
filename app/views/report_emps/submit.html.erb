@@ -11,7 +11,7 @@
 }
 </style>
 <%= stylesheet_link_tag "report" %>
-<title><%=@company.ccname%>公司--人员花名册</title>
+<title>公司--人员花名册</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <OBJECT id=WebBrowser classid=CLSID:8856F961-340A-11D0-A96B-00C04FD705A2 height=0 width=0></OBJECT>
@@ -32,10 +32,16 @@
 		</td>
 	</tr>
 </table>
-<table id="RS" border="0" style="width:100%;" align="center" class="borderTable">
+<table id="RS" style="width:100%;" >
+	<% 
+	report_sum = 0
+	@company.each do |company|
+		
+	%>	
+<tr><td>
+<table border="0" style="width:100%;" align="center" class="borderTable">
 <!--报表表头-->
-	<caption><font color=blue size=3><b><%=@company.ccname%>公司<font color=blue size=3><b><br>人员花名册</b></font>
-	</caption>
+	<caption><font color=blue size=3><b><%= company.ccname %>公司<font color=blue size=3><b><br>人员花名册</b></font></caption>
 	<tr>
 				<td width="5%" rowspan="2" height="20" align="center" class="tdStyle" >入职日期</td>
 				<td width="10%" rowspan="2" height="20" align="center" class="tdStyle" >所属公司</td>
@@ -62,17 +68,28 @@
 				<td width="3%" height="20" align="center" class="tdStyle" >基数</td>
 				<td width="3%" height="20" align="center" class="tdStyle" >缴费</td>
 			</tr>
-<!--数据部分-->
-<%
-	@employees.each do |employee|
-%>
+			<!--数据部分-->
+			<%
+				sum_p = 0
+				sum_insure = 0.0
+				sum_provident = 0.0
+				@employees.each do |employee|
+					if employee.companys.id - company.id == 0 
+						sum_p += 1
+						if !employee.insure_base.blank?
+							sum_insure += employee.insure_base.to_f							
+						end
+						if !employee.provident_base.blank?
+							sum_provident += employee.provident_base.to_f
+						end
+			%>
 			<tr>
 				<td height="20"  align="left"><%= employee.hire_date%></td>
-				<td height="20"  align="left"><%=h @company.ccname%></td>
-				<td height="20"  align="left"><%=h @company.ccode%></td>
+				<td height="20"  align="left"><%=h company.ccname%></td>
+				<td height="20"  align="left"><%=h company.ccode%></td>
 				<td height="20"  align="left"><%=h employee.insure_card%></td>
 				<td height="20"  align="left"><%=h employee.empname%></td>
-				<td height="20"  align="left"><%= employee.sex == 1 ? "Man":"Woman"%></td>
+				<td height="20"  align="left"><%= employee.sex == 1 ? "男" : "女"%></td>
 				<td height="20"  align="left"><%=h employee.empidn%></td>
 				<td height="20"  align="left"><%=h employee.national%></td>
 				<td height="20"  align="left"><%=h employee.education%></td>
@@ -88,7 +105,19 @@
 				<td height="20"  align="left"><%=h employee.telphone%></td>
 				<td height="20"  align="left"><%=h employee.address%></td>
 			</tr>
-<%end%>
+			<% end %>
+			<%end%>
+			<tr>
+				<td colspan="4">公司合计</td>
+				<td><%= sum_p %>人</td>
+				<td colspan="9" style="text-align:right;"><%= sum_insure %></td>
+				<td height="20"  align="left">&nbsp;</td>
+				<td colspan="5" style="text-align:left;"><%= sum_provident %></td>
+			</tr>
+		</table>
+		</td>
+		</tr>
+	<%end %>
 		</table>
 </body>
 </html>

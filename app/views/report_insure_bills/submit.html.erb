@@ -11,7 +11,7 @@
 	page-break-after: always;
 }
 </style>
-<title><%=h @company.ccname%>--对账单</title>
+<title>对账单</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <OBJECT id=WebBrowser classid=CLSID:8856F961-340A-11D0-A96B-00C04FD705A2 height=0 width=0></OBJECT>
@@ -32,20 +32,36 @@
 		</td>
 	</tr>
 </table>
-<table id="RS" align="center" border="2" cellpadding="0" cellspacing="0" class="borderTable">
-	<caption><font color=blue size=3><b><%=h @company.ccname%><font color=blue size=3><b><br>对账单</b></font></caption>
+<table id="RS" style="width:100%;">
+	<%
+	 @company.each do |company|
+		new_employee  = Employee.with_bargain_begin(company.id , @start_date , @end_date)
+	    quit_employee = Employee.with_bargain_end(company.id,@start_date,@end_date)
+
+	    @news = []
+	    @quits= []
+	    (new_employee || []).each do |employee|
+	        @news << employee.empname
+	    end
+	    (quit_employee || []).each do |employee|
+	        @quits << employee.empname
+	    end
+	 %>
+	<tr><td>
+<table align="center" border="2" cellpadding="0" cellspacing="0" class="borderTable1">
+	<caption><font color=blue size=3><b><%=h company.ccname%><font color=blue size=3><b>对账单</b></font></caption>
   <col width="20" span="18" />
   <tr height="30">
-    <td height="30" colspan="18">帐单日期：<%=params[:CalMonth].slice(0,4)%>年<%=params[:CalMonth].slice(4,2)%>月&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  最迟付款日: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  制作单位：<%=Infomation.available_systemsettings.company%></td>
+    <td height="30" class="tdss" colspan="18">帐单日期：<%=params[:CalMonth].slice(0,4)%>年<%=params[:CalMonth].slice(4,2)%>月&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  最迟付款日: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  制作单位：<%=Infomation.available_systemsettings.company%></td>
   </tr>
   <tr height="30">
     <td height="30" colspan="2">新增人员名单</td>
-    <td colspan="13"><%= @news.join(',')%></td>
+    <td colspan="13" class="tdss"><%= @news.join(',')%></td>
     <td colspan="3">合计<%=@news.length%>人</td>
   </tr>
   <tr height="30">
     <td height="30" colspan="2">终止人员名单　</td>
-    <td colspan="13"><%= @quits.join(',')%></td>
+    <td colspan="13" class="tdss"><%= @quits.join(',')%></td>
     <td colspan="3">合计<%=@quits.length%>人</td>
   </tr>
   <tr height="30">
@@ -53,8 +69,7 @@
     <td colspan="16">　</td>
   </tr>
   <tr height="30">
-    <td rowspan="2" height="60" width="20">序<br />
-      号</td>
+    <td rowspan="2" height="60" width="20" align="center">序号</td>
     <td rowspan="2" width="20" align="center">社保卡号</td>
     <td rowspan="2" align="center">姓名</td>
     <td rowspan="2" width="20" align="center">进本单位参保时间</td>
@@ -81,16 +96,17 @@
 	i = 1
 	suminsurecolu = 0.00
 	sumprovidcolu = 0.00
+	@employees    = Employee.where(" company = ? ", company.id)
 	@employees.each do |employee|
 	suminsure = 0.00
 	sumprovid = 0.00
 
 %>
   <tr height="30">
-    <td height="30" width="20"><%=i%></td>
-    <td><%=h employee.insure_card%></td>
-    <td><%=h employee.empname%></td>
-    <td><%= params[:CalMonth].slice(0,4) %>年<%=params[:CalMonth].slice(4,2)%>月</td>
+    <td height="30" width="20" align="center"><%=i%></td>
+    <td align="center"><%=h employee.insure_card%></td>
+    <td align="center"><%=h employee.empname%></td>
+    <td align="center"><%= params[:CalMonth].slice(0,4) %>年<%=params[:CalMonth].slice(4,2)%>月</td>
     <td width="20" align="right"><%= employee.insure_base%></td>
 	<%
 	money = @moneysPerson[params[:CalMonth] + ";" + employee.company.to_s + ";" + employee.id.to_s]
@@ -175,7 +191,12 @@ end
     <td height="30" colspan="18" align="left">户名: <%=Infomation.available_systemsettings.company%>  银行帐户：<%=Infomation.available_systemsettings.bank_account%>  开户行：<%=Infomation.available_systemsettings.open_bank%>  </td>
   </tr>
 </table>
-
+</td></tr>
+<tr><td height="20">
+	</td>
+</tr>
+<% end %>
+</table>
 </body>
 </html>
 

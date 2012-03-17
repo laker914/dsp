@@ -1,6 +1,6 @@
 class Employee < ActiveRecord::Base
   
-  # belongs_to :company
+  belongs_to :companys ,:class_name => "Company" , :foreign_key => "company"
     
   # validates_uniqueness_of :empname , :scope  => :company ,:message => "员工姓名已存在"
   

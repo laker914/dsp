@@ -10,16 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120312074908) do
-
-  create_table "areas", :force => true do |t|
-    t.string   "acode"
-    t.string   "aname"
-    t.string   "py_code"
-    t.string   "parent"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+ActiveRecord::Schema.define(:version => 20120317044647) do
 
   create_table "calcs", :force => true do |t|
     t.string   "company"
@@ -124,6 +115,7 @@ ActiveRecord::Schema.define(:version => 20120312074908) do
     t.string   "company"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "rmb",          :precision => 18, :scale => 2, :default => 50.0
   end
 
   create_table "insure_programs", :force => true do |t|

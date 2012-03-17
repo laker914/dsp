@@ -70,11 +70,19 @@ Ext.extend(MainPanel ,Ext.TabPanel , {
 Ext.onReady(function(){
 	 
 	Ext.QuickTips.init();
-	
-	/**var themeCombo = new Ext.ux.form.ThemeCombo({
+	Ext.form.Field.prototype.msgTarget='title'; 
+	/*
+	var themeCombo = new Ext.ux.form.ThemeCombo({
 			  renderTo : 'themect'
 		});
-	*/
+		*/
+		
+	var header = new Ext.Panel({
+			region:'north' , split:'true',width:120 , margins:'0 0 0 0',height:50
+			,
+			contentEl:'north'
+	});	
+		
 	var dsp = new Ext.Panel({
 		  title:"系统导航",layoutConfig:{
 					animate:true
@@ -113,12 +121,15 @@ Ext.onReady(function(){
 		 //dsp.selectClass(tab.cclass);
 	});
 	
+	/**
+	{
+		region:'north',contentEl:'north', 
+		layout:'fit', height:50
+	} */
+	
 	var viewport = new Ext.Viewport({
 		   layout:'border', 
-			 items : [{
-				region:'north',contentEl:'north', 
-				layout:'fit', height:50
-			}, dsp , mainPanel]
+			 items : [header , dsp , mainPanel]
 	});
 	viewport.doLayout();
 	//tree start
@@ -482,7 +493,7 @@ Ext.onReady(function(){
 						height : 205,
 						resizable : false,
 						draggable : true,
-						closeAction : 'hide',
+						closeAction : 'close',
 						modal : true,
 						title : '<span class="commoncss">密码修改</span>',
 						iconCls : 'key-icon',
@@ -492,7 +503,7 @@ Ext.onReady(function(){
 						buttonAlign : 'right',
 						border : false,
 						animCollapse : true,
-						animateTarget : Ext.getBody(),
+						// animateTarget : Ext.getBody(),
 						constrain : true,
 						listeners : {
 							'show' : function(obj) {
@@ -540,6 +551,7 @@ Ext.onReady(function(){
 										Ext.MessageBox.alert('提示',"密码修改成功" , function(){
 											 userWindow.hide();
 										});
+										// userWindow.hide();
 								} ,
 								params : {
 										authenticity_token:form_token

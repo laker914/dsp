@@ -19,9 +19,11 @@
 		},{
 			fieldLabel:'开户行',name:'infomation[open_bank]',allowBlank:false,anchor:'99%'
 		},{
+			fieldLabel:'贡献度',name:'infomation[rmb]',allowBlank:true,anchor:'99%'
+		},{
 			name:'infomation[id]' , hidden :true   //主键值 隐藏 
 		}],buttons:[{
-		    text:"修改",
+		    text:"保存",
 		    handler:function(){
 			if (!form.form.isValid()){
 				return ;
@@ -33,7 +35,7 @@
 				params: { format: 'json' },
 				waitMsg:'正在处理数据,请稍候...',
 				success:function(form,action){
-					DspCommon.MessageBox("Update Successfuly.");
+					DspCommon.MessageBox("保存成功.");
 				},
 				failure:function(form,action){
 					var errorss = action.result.msg;

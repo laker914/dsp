@@ -1,6 +1,6 @@
-<div id="chartDiv" style="float:left;width:400px;height:500px;">
+<div id="chartDiv" style="float:left;width:350px;height:400px;">
 </div>
-<div id="chartCompany" style="float:right;width:500px;height:500px;">
+<div id="chartCompany" style="float:right;width:400px;height:300px;">
 	
 </div>
 <script type="text/javascript" charset="utf-8">
@@ -23,8 +23,8 @@
 		        title: '人数统计表',
 		        frame:true,
 		        renderTo: 'chartDiv',
-		        width:500,
-		        height: 400,//Ext.getCmp('dsp-body').getActiveTab().getInnerHeight(),
+		        width:350,
+		        height: 300,//Ext.getCmp('dsp-body').getActiveTab().getInnerHeight(),
 		        layout:'fit',
 
 		        items: {
@@ -114,8 +114,8 @@
 		});
 		
 		var company = new Ext.Panel({
-		        width: Ext.getCmp('dsp-body').getActiveTab().getInnerWidth() - 500,
-		        height: 400,//Ext.getCmp('dsp-body').getActiveTab().getInnerHeight(),
+		       // width: Ext.getCmp('dsp-body').getActiveTab().getInnerWidth() - 500,
+		        height: 300,//Ext.getCmp('dsp-body').getActiveTab().getInnerHeight(),
 		        title: '客户人数统计',
 		        renderTo: 'chartCompany',
 		        items: {

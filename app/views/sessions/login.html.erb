@@ -26,13 +26,15 @@
 <script type="text/javascript" charset="utf-8">
 	Ext.onReady(function(){
 		Ext.QuickTips.init();
-	  	Ext.form.Field.prototype.msgTarget = 'qtip';
+	  	// Ext.form.Field.prototype.msgTarget = 'qtip';
+		Ext.form.Field.prototype.msgTarget='title'; //提示的方式，枚举值为  
 		Ext.BLANK_IMAGE_URL = 'images/s.gif';
 		var panel = new Ext.Panel({
 				el : 'hello-tabs',
 				autoTabs : true,
 				deferredRender : false,
-				border : false,
+				border : true,
+				frame:true,
 				items : {
 					xtype : 'tabpanel',
 					id : 'loginTabs',

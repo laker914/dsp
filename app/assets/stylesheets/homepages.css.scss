@@ -14,7 +14,8 @@ border:0 none;
 border-top:1px solid #d0d0d0;
 background:transparent;
 }
-#apps .top-toolbar button {
+.apps .top-toolbar button {
+
 }
 .x-panel-noborder {
 border: 0 none;
@@ -30,7 +31,8 @@ height: 44px;
 }
 
 #north-table {
-	background: url(default.png) repeat-x 0 0;
+  /**background: url(default.png) repeat-x 0 0; */
+background-color: #5B9700;
 }
 #themect {
 	float :right;
