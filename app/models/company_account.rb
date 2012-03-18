@@ -6,4 +6,5 @@ class CompanyAccount < ActiveRecord::Base
         find_by_sql(" SELECT distinct `company_accounts`.* FROM `company_accounts` inner join companies as companys on companys.city_id = company_accounts.city_id where companys.id in (#{ids.join(',')})" )
        # find(:all ,  :conditions => [" companys.id in (?) " , ids ], :joins => " inner join companies as companys on companys.city_id = company_accounts.city_id ")
     end
+     
 end

@@ -100,7 +100,7 @@
 		}	,{
 			fieldLabel:'公积金基数',name:'company[provident_base]',allowBlank:false,anchor:'99%'
 		}	,{
-			fieldLabel:'贡献度',name:'company[rmb]' , allowBlank:false , anchor:'99%'
+			fieldLabel:'单价',name:'company[rmb]' , allowBlank:false , anchor:'99%'
 		}   ,{
 			fieldLabel:'联系人',name:'company[contact]',allowBlank:false,anchor:'99%'
 		}	,{
@@ -133,7 +133,7 @@
 		,{  dataIndex: 'telphone', header:'手机',id:'telphone' } 
 		,{  dataIndex: 'fax',header:'传真',id:'fax' } */
 	];
-	 store = new Ext.data.JsonStore({
+	 company_store = new Ext.data.JsonStore({
 	        // store configs
 	        autoDestroy: true,
 			baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
@@ -159,7 +159,7 @@
 	    });
 	
 		var grid = new Ext.grid.GridPanel({ //EditorGridPanel({
-	        store: store,
+	        store: company_store,
 			frame:true,
 			title:'公司资料',
 			renderTo: 'data-grid',
@@ -194,7 +194,7 @@
 			                 showPreview: true 
 			} ,
 			bbar: new Ext.PagingToolbar({
-	            store: store,
+	            store: company_store,
 	            pageSize: 20,
 				displayInfo: true,
 				displayMsg: '显示第 {0} 条到 {1} 条记录，共 {2} 条' ,
@@ -259,7 +259,7 @@
 			waitMsg:'正在处理数据,请稍候...',
 			success:function(form,action){
 				addCompanyWindow.hide();
-				store.reload();
+				company_store.reload();
 				form.reset();
 			},
 			failure:function(form,action){
@@ -337,7 +337,7 @@
 	}
 	
 	function loadData(formParams){
-		 store.load({
+		 company_store.load({
 			params: {
 				start:0 , limit:20, query:[formParams]
 			}

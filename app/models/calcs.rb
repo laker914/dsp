@@ -16,7 +16,11 @@ class Calcs < ActiveRecord::Base
   end
   
   def findEmployees(firstMonth , lastMonth)
-      Employee.find(:all , :conditions => [" bargain_begin <= ? and bargain_end >= ?" , lastMonth , firstMonth ])
+      if need_calc_company.blank?
+        Employee.find(:all , :conditions => [" bargain_begin <= ? and bargain_end >= ?" , lastMonth , firstMonth ])
+      else
+        Employee.where(" bargain_begin <= ? and bargain_end >= ? and company in (?)" , lastMonth , firstMonth , need_calc_company)
+      end
   end
   
   private 
@@ -46,8 +50,8 @@ class Calcs < ActiveRecord::Base
         
          employees.each do |employee|
             _company = @company_hash[employee.company.to_s]
-            puts _company.city_id.to_s.class
             keys = _company.city_id.to_s + ";" + employee.hukou.to_s
+            
             # get company account for employee
             with_items_company = com_accounts_hash[keys]
             # if (with_items_company.blank?)  
@@ -59,52 +63,87 @@ class Calcs < ActiveRecord::Base
             insureResult = InsureResult.new(:company => employee.company , 
                 :emp_id => employee.id , :emp_name => employee.empname,
                 :yearmonth => self[:yearmonth] , :hukou => employee.hukou)
-            insureResult.save!   
+            insureResult.save!  
+            p_flag = 0 
+            c_flag = 0 
             if with_items_company.blank? == false
-                company_items(insureResult.id , with_items_company , employee)
+              c_flag = company_items(insureResult.id , with_items_company , employee)
             end
             if with_items_personal.blank? == false
-                personal_items(insureResult.id , with_items_personal ,employee)              
+                p_flag = personal_items(insureResult.id , with_items_personal ,employee)              
+            end
+            if p_flag + c_flag == 0
+               insureResult.destroy
             end
          end
     end
     # company items
     def company_items(keys , with_items_company , employee)
+        flag = 0
         with_items_company.each do |items|
-          puts items
-          if employee.is_insure == 0 and items.id > 1
-              puts "this employee is not config insure items"
+          if employee.is_insure > -1 and items.id > 1
+                base = items.id == 1 ? employee.provident_base : employee.insure_base
+                value = 0
+                if items.company_type == 1
+                      value = base * items.rate / 100 
+                else
+                      value = items.fix_value                                 
+                end
+                value = compare(items.company_lower , items.company_limit , value)
+                sub = InsureResultsSub.new(:main_id => keys , :insure_type => 1 , :insure_base => base , :insure_item => items.item_id , :insure_money => value)
+                sub.save
+                flag += 1
           end
           
-          if employee.is_provident == 0 and items.id == 1
-              pus "this employee is not config provident items."
+          if employee.is_provident > -1 and items.id == 1
+                  base = items.id == 1 ? employee.provident_base : employee.insure_base
+                  value = 0
+                  if items.company_type == 1
+                        value = base * items.rate / 100 
+                  else
+                        value = items.fix_value                                 
+                  end
+                  value = compare(items.company_lower , items.company_limit , value)
+                  sub = InsureResultsSub.new(:main_id => keys , :insure_type => 1 , :insure_base => base , :insure_item => items.item_id , :insure_money => value)
+                  sub.save
+                  flag += 1
           end
-          base = items.id == 1 ? employee.provident_base : employee.insure_base
-              value = 0
-              value = base * items.rate / 100  unless items.rate.blank?
-              value = items.fix_value unless items.company_type == 1 
-              value = compare(items.company_lower , items.company_limit , value)
-              sub = InsureResultsSub.new(:main_id => keys , :insure_type => 1 , :insure_base => base , :insure_item => items.item_id , :insure_money => value)
-              sub.save
       end
+      flag
     end
+    
     # personal items
     def personal_items(keys , with_items_personal ,employee)
+      flag = 0
        with_items_personal.each do |items|
-           if employee.is_insure == 0 and items.id > 1
-              puts "this employee is not config insure items"
+           if employee.is_insure > -1 and items.id > 1
+              base = items.id == 1 ? employee.provident_base : employee.insure_base
+              value = 0
+               if items.personal_type == 1
+                    value = base * items.rate / 100 
+              else
+                    value = items.fix_value                                 
+              end
+              value = compare(items.personal_lower , items.personal_limit , value)
+              sub = InsureResultsSub.new(:main_id => keys , :insure_type => 2 , :insure_base => base , :insure_item => items.item_id , :insure_money => value)
+             sub.save
+             flag += 1
            end
-           if employee.is_provident == 0 and items.id == 1
-              pus "this employee is not config provident items."
+           if employee.is_provident > -1 and items.id == 1
+              base = items.id == 1 ? employee.provident_base : employee.insure_base
+              value = 0
+              if items.personal_type == 1
+                  value = base * items.rate / 100 
+              else
+                  value = items.fix_value                                 
+              end
+              value = compare(items.personal_lower , items.personal_limit , value)
+              sub = InsureResultsSub.new(:main_id => keys , :insure_type => 2 , :insure_base => base , :insure_item => items.item_id , :insure_money => value)
+              sub.save
+              flag += 1
            end
-           base = items.id == 1 ? employee.provident_base : employee.insure_base
-           value = 0
-           value = base * items.rate / 100 unless items.rate.blank?
-           value = items.fix_value unless items.personal_type == 1
-           value = compare(items.personal_lower , items.personal_limit , value)
-           sub = InsureResultsSub.new(:main_id => keys , :insure_type => 2 , :insure_base => base , :insure_item => items.item_id , :insure_money => value)
-          sub.save
        end
+       flag
     end
     
     # delete all

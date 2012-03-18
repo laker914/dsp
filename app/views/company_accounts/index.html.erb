@@ -135,7 +135,7 @@
 		fieldLabel:'定额',name:'company_account[fix_value]',allowBlank:true,anchor:'99%'
 	});
 	var rateValue = new Ext.form.TextField({
-		fieldLabel:'百分比',name:'company_account[rate]',allowBlank:false,anchor:'99%'
+		fieldLabel:'百分比',name:'company_account[rate]',allowBlank:true,anchor:'99%'
 	});
 	
 	var addFormPanel = new Ext.form.FormPanel({
@@ -182,8 +182,8 @@
 				] , data:RATE
 			}),
 				listeners:{
-					change:function(f,value){
-				 		setValuesByType(value);
+					'select':function(combo , record ,index){
+				 		setValuesByType(combo.value);
 					}
 				},
 			valueField:'company_account[company_type]',
@@ -349,7 +349,8 @@
 		addCompanyWindow.setTitle("新增"+controller_name);
 		addFormPanel.getForm().findField('company_account[company_round]').setValue(1);
 		addFormPanel.getForm().findField('company_account[company_type]').setValue(1);
-		addFormPanel.getForm().findField('company_account[hukou]').setValue(1);		
+		addFormPanel.getForm().findField('company_account[hukou]').setValue(1);	
+		setValuesByType(1)	
 		addCompanyWindow.show();
 	}
 	
@@ -453,8 +454,22 @@
 	}
 	// 根据扣款方式判断 百分比和定额 
 	function setValuesByType(value){
-		fixValue.allowBlank = (value == 1);
-		rateValue.allowBlank = !(value == 1);
+		/*if (value == 1) {
+			rateValue.allowBlank = false;
+			rateValue.readOnly   = false;	
+			fixValue.allowBlank  = true;
+			fixValue.readOnly    = true;			
+		} else { 
+			fixValue.allowBlank  = false;
+			fixValue.readOnly    = false;
+			rateValue.allowBlank = true;
+			rateValue.readOnly   = true;
+		} 
+		alert(value) */
+		//fixValue.hidden = (value ==1);
+		
+		//rateValue.hidden = !(value ==1);
+		//alert(value);
 	}
 });
 </script>

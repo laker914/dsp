@@ -175,7 +175,7 @@
 			return value;
 		} }							
 	];
-	 store = new Ext.data.JsonStore({
+	 employee_store = new Ext.data.JsonStore({
 	        // store configs
 	        autoDestroy: true,
 			baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
@@ -227,6 +227,15 @@
 				}),
 				valueField:'employee[is_provident]', 
 				displayField:'is_provident_name'
+				/*,
+				listeners:{
+					select :function(combo , record , index) {
+					    var insure = comboInsure.getValue();
+						if (insure == 2 && combo.value == 2) {
+							addFormPanel.getForm().findField("employee[bargain_end]").setValue("2012-05-01");
+						}
+					}
+				} */
 			});
 	
 	var comboInsure = 	new Ext.form.ComboBox({
@@ -243,6 +252,14 @@
 			}),
 			valueField:'employee[is_insure]', 
 			displayField:'is_insure_name'
+			/*,listeners:{
+				select :function(combo , record , index) {
+				    var insure = comboProvident.getValue();
+					if (insure == 2 && combo.value == 2) {
+						addFormPanel.getForm().findField("employee[bargain_end]").setValue("2012-05-01");
+					}
+				}
+			} */
 		});
 		var combo_sex = new Ext.form.ComboBox({
 			fieldLabel:'性别',hiddenName:'employee[sex]' , allowBlank:false,
@@ -416,7 +433,7 @@
 		});
 	
 		var grid = new Ext.grid.GridPanel({ //EditorGridPanel({
-	        store: store,
+	        store: employee_store,
 			frame:true,
 			title:'员工信息',
 			renderTo: 'employees-grid',
@@ -451,7 +468,7 @@
 			                 showPreview: true 
 			} ,
 			bbar: new Ext.PagingToolbar({
-	            store: store,
+	            store: employee_store,
 	            pageSize: 20,
 				displayInfo: true,
 				displayMsg: '显示第 {0} 条到 {1} 条记录，共 {2} 条' ,
@@ -521,7 +538,7 @@
 			waitMsg:'正在处理数据,请稍候...',
 			success:function(form,action){
 				addCompanyWindow.hide();
-				store.reload();
+				employee_store.reload();
 				form.reset();
 			},
 			failure:function(form,action){
@@ -594,7 +611,7 @@
 	}
 	
 	function loadData(formParams){
-		 store.load({
+		 employee_store.load({
 			params: {
 				start:0 , limit:20, query:[formParams]
 			}
