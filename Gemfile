@@ -40,3 +40,5 @@ gem "extjs_scaffold", "~> 0.1.1"
 gem 'delayed_job_active_record'
 
 #gem 'acts_as_nested_set'
+
+gem  "mail" , "2.3.0"

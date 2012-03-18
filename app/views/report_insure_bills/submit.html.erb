@@ -15,15 +15,25 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <OBJECT id=WebBrowser classid=CLSID:8856F961-340A-11D0-A96B-00C04FD705A2 height=0 width=0></OBJECT>
+<script type="text/javascript" charset="utf-8">
+	var request_token = '<%= "#{request_forgery_protection_token}"%>';
+	var form_token = '<%="#{form_authenticity_token}"%>';
+	function send_mail(){
+		window.open("/report_insure_bills/send_to_mail?company_id=<%=@company_id%>&CalMonth=<%=@yearmonth%>&authenticity_token="+form_token,"");
+	}
+</script>
 <body leftmargin="0" topmargin="0">
 <!--报表工具部分-->
 <table width="100%" border="0" cellspacing="1" cellpadding="1" align="center">
+	<input type="hidden" name="company_id" value="<%=@company_id%>" id="company_id">
+	<input type="hidden" name="CalMonth" value="<%=@yearmonth%>" id="CalMonth">
 	<tr>
-		<td width="80%">
+		<td width="20%">
 		<div align="left" class="Noprint"><span id="DisTag" style="display: none">&nbsp;</span></div>
 		</td>
-		<td width="40%">
+		<td width="60%">
 			<div align="right" class="Noprint">
+				<input type="button" value="发送邮件"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="send_mail();">
 		        <input type="button" value="页面设置"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(8,1);">
 		        <input type="button" value="打印预览"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(7,1);">
 		        <input type="button" value="打印"  class="mu" onMouseOver="className='mo'" onMouseOut="className='mu'" onClick="document.all.WebBrowser.ExecWB(6,1);">
@@ -32,7 +42,7 @@
 		</td>
 	</tr>
 </table>
-<table id="RS" style="width:100%;">
+<table id="RS" style="width:100%;" >
 	<%
 	 @company.each do |company|
 		new_employee  = Employee.with_bargain_begin(company.id , @start_date , @end_date)
@@ -47,8 +57,8 @@
 	        @quits << employee.empname
 	    end
 	 %>
-	<tr><td>
-<table align="center" border="2" cellpadding="0" cellspacing="0" class="borderTable1">
+	<tr><td align="center">
+<table align="center" border="1" cellpadding="0" cellspacing="0" class="borderTable1">
 	<caption><font color=blue size=3><b><%=h company.ccname%><font color=blue size=3><b>对账单</b></font></caption>
   <col width="20" span="18" />
   <tr height="30">

@@ -1,6 +1,10 @@
 class SessionsController < ApplicationController
   layout 'session'
   
+  def session_login
+    
+  end
+  
   def update_password
      @user = User.authenticate(session[:user_account],params[:old_password])
      respond_to do |format|
@@ -50,7 +54,8 @@ class SessionsController < ApplicationController
                  session[:user_id] = @user.id
                  session[:user_account] = @user.login
                  session[:user_name] = @user.login_name
-                success = true
+                 update_activity_time
+                 success = true
                 # redirect_to({:controller => "homepages" , :action => "index"})
             else
                 reset_session

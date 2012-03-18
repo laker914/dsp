@@ -6,7 +6,33 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
-  before_filter :isvalid_auth, :except => [:login, :logout ,:unlock , :cities_tree]
+  before_filter :session_expiry,  :except => [:login, :session_login,:logout,:unlock]
+  before_filter :update_activity_time, :except => [:login, :session_login,:logout ]
+  before_filter :isvalid_auth, :except => [:login,:session_login, :logout ,:unlock , :cities_tree]
+
+  def session_expiry
+    if session[:expires_at].blank?
+        reset_session
+        if request.xhr?
+            render  :json => {:success => false , :msg => "您的会话已失效,请点击右上角退出按钮"}
+        else
+            redirect_to :controller => "sessions" , :action => "session_login"
+        end
+    end
+    @time_left = (session[:expires_at] - Time.now).to_i
+    unless @time_left > 0
+      reset_session
+      if request.xhr?
+          render  :json => {:success => false , :msg => "您的会话已失效,请点击右上角退出按钮"}
+      else
+          redirect_to :controller => "sessions" , :action => "session_login"
+      end
+    end
+  end
+
+  def update_activity_time
+    session[:expires_at] = 480.minutes.from_now
+  end
 
   def isvalid_auth
     if session[:user_id].blank?

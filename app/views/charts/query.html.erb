@@ -1,7 +1,10 @@
-<div id="chartDiv" style="float:left;width:350px;height:400px;">
+<div id="portal" style="position:absolute;">
+<div id="chartCompany" style="float:left;width:350px;height:300px;">
 </div>
-<div id="chartCompany" style="float:right;width:400px;height:300px;">
-	
+<div id="chartDiv" style="float:left;left:360px;width:500px;height:300px;">
+</div>
+<div id="chartRMB" style="float:left;top:410px;left:1px;width:350px;"></div>
+<div id="chartBusiness" style="left:360px;float:left;width:500px;"></div>
 </div>
 <script type="text/javascript" charset="utf-8">
 	Ext.chart.Chart.CHART_URL = '/FusionCharts/charts.swf';
@@ -23,10 +26,9 @@
 		        title: '人数统计表',
 		        frame:true,
 		        renderTo: 'chartDiv',
-		        width:350,
+		        //width:350,
 		        height: 300,//Ext.getCmp('dsp-body').getActiveTab().getInnerHeight(),
 		        layout:'fit',
-
 		        items: {
 		            xtype: 'columnchart',
 		            store: store,
@@ -118,6 +120,8 @@
 		        height: 300,//Ext.getCmp('dsp-body').getActiveTab().getInnerHeight(),
 		        title: '客户人数统计',
 		        renderTo: 'chartCompany',
+		        frame:true,		
+		        layout:'fit',
 		        items: {
 		            store: pie_store,
 		            xtype: 'piechart',
@@ -138,9 +142,65 @@
 		            }
 		        }
 		    });
- 
+		var business_store = new Ext.data.JsonStore({
+				baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+		        fields:['month', 'money'],
+				url: '/charts/business?format=json',
+		        remoteSort: false,
+		        storeId: 'myStore',
+		        // reader configs
+		        idProperty: 'id',
+		        root: 'data',
+		        totalProperty: 'total'
+		    });
 		
+		var business = new Ext.Panel({
+			height:300,title:'营业额统计',
+			renderTo: 'chartBusiness',
+	        frame:true,			
+			items:{
+				 store:business_store,
+				 xtype:'linechart',xField:'month',yField:'money'
+			}
+		})
+		var rmb_store = new Ext.data.JsonStore({
+			fields:['company','total'],
+			baseParams: {<%= "#{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>},
+			url: '/charts/company?format=json&rmb=true',
+	        remoteSort: false,
+	        storeId: 'myStore',
+	        // reader configs
+	        idProperty: 'id',
+	        root: 'data',
+	        totalProperty: 'total'
+		});
+		var rmb = new Ext.Panel({
+			height:300, title:"客户贡献度统计",
+	        frame:true,			
+			renderTo :'chartRMB',
+			items: {
+	            store: rmb_store,
+	            xtype: 'piechart',
+	            dataField: 'total',
+	            categoryField: 'company',
+	            extraStyle:
+	            {
+	                legend:
+	                {
+	                    display: 'bottom',
+	                    padding: 5,
+	                    font:
+	                    {
+	                        family: 'Tahoma',
+	                        size: 13
+	                    }
+	                }
+	            }
+	        }
+		})
 		store.load();
 		pie_store.load();
+		business_store.load();
+		rmb_store.load();
 	})
 </script>

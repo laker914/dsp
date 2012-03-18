@@ -38,6 +38,12 @@ class InsureResult < ActiveRecord::Base
     end
     hash
   end
+
+  # 得到整月金额
+  def self.full_year_money(years)
+     insureResults = InsureResult.select(" id ").where(" yearmonth = ? " , years)
+     InsureResultsSub.where(" main_id in (?)" , insureResults).sum("insure_money")
+  end
   
   # get current year all the month
   def self.full_month(year="")

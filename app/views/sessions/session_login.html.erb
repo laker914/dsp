@@ -1,0 +1,8 @@
+<div id="name">
+	您 的会话已失效，请<%= link_to_function "重新登录", "do_login()"%>
+	<script type="text/javascript" charset="utf-8">
+		function do_login(){
+			window.location = "/sessions/login";
+		}
+	</script>
+</div>

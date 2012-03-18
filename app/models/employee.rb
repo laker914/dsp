@@ -18,9 +18,15 @@ class Employee < ActiveRecord::Base
   def self.count_employee(yearmonth)
       where(" extract(year_month from bargain_begin) <= ? and extract(year_month from bargain_end) >= ?" , yearmonth , yearmonth).count("id")
   end
-  
+
+  #  get top 10 company by employees
   def self.by_company_sum
     Employee.group(:company).limit(10).order("count_id DESC ").count(:id)
+  end
+  
+  # get other company not top 10
+  def self.other_company_sum
+    Employee.group(:company).offset(10).order("count_id DESC").count(:id)
   end
   
   def bargain_begin

@@ -76,9 +76,18 @@
 			fieldLabel:'公司编号',name:'company[ccode]' ,allowBlank:false,anchor:'99%',width:50
 		},{
 			fieldLabel:'公司名称',name:'company[ccname]' , allowBlank:false,anchor:'99%',width:50
-		},{
-			fieldLabel:'代理方式',name:'company[c_method]',allowBlank:false,anchor:'99%',width:50
-		},{
+		}, new Ext.form.ComboBox({
+			hiddenName : 'company[c_method]',
+			fieldLabel : '代理方式', allowBlank:false ,
+			typeAhead  : true ,triggerAction:'all',
+			lazyRender:true,mode:'local',selectOnFocus:true,
+			editable:false,
+			store:new Ext.data.ArrayStore({
+				fields:['company[c_method]','c_method_name'],
+				data : proxy
+			}),
+			valueField:'company[c_method]' , displayField:'c_method_name'
+		}),{
 			fieldLabel:'公司性质',name:'company[c_type]',allowBlank:false,anchor:'99%'
 		}	,{
 			fieldLabel:'组织机构码',name:'company[org_code]' , allowBlank:false,anchor:'99%'
@@ -91,7 +100,11 @@
 		}	,{
 			fieldLabel:'公积金基数',name:'company[provident_base]',allowBlank:false,anchor:'99%'
 		}	,{
+			fieldLabel:'贡献度',name:'company[rmb]' , allowBlank:false , anchor:'99%'
+		}   ,{
 			fieldLabel:'联系人',name:'company[contact]',allowBlank:false,anchor:'99%'
+		}	,{
+			fieldLabel:'邮箱',name:'company[email]',allowBlank:false,anchor:'99%'
 		}	,{
 			fieldLabel:'职务',name:'company[job]',allowBlank:false,anchor:'99%'
 		}	,{
@@ -204,7 +217,7 @@
 	});
 	
 	var addCompanyWindow = new Ext.Window({
-		layout:'fit',width:400 , height: 420 ,resizable:false,draggable:true,
+		layout:'fit',width:400 , height: 460 ,resizable:false,draggable:true,
 		closable:true,modal:true, closeAction:'hide',
 		collapsible:true, maximizable:false, buttonAlign:'right',
 		border:false,animCollapse:true,
@@ -226,7 +239,8 @@
 	function create(){
 		selectedRecordId = undefined;
 		addFormPanel.form.reset();
-		addCompanyWindow.setTitle("新增"+controller_name);		
+		addCompanyWindow.setTitle("新增"+controller_name);
+		addFormPanel.getForm().findField('company[rmb]').setValue("<%=Infomation.available_systemsettings.rmb%>");
 		addCompanyWindow.show();
 	}
 	
@@ -239,7 +253,9 @@
 			url : url,
 			method : "POST",
 			params: { format: 'json' ,
-				'company[city_id]': document.getElementById("city_id").value },
+				'company[city_id]': document.getElementById("city_id").value 
+				<%= " , #{ request_forgery_protection_token }: '#{ form_authenticity_token }' "%>
+				},
 			waitMsg:'正在处理数据,请稍候...',
 			success:function(form,action){
 				addCompanyWindow.hide();
